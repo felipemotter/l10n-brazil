@@ -2,7 +2,7 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 {
-    "name": "Payment Informations on NFe",
+    "name": "NFe Payment Informations",
     "summary": "Add payment informations on NFe",
     "category": "Localisation",
     "license": "AGPL-3",

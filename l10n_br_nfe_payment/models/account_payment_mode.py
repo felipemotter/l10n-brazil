@@ -4,7 +4,7 @@ from odoo import fields, models
 class AccountPaymentMode(models.Model):
     _inherit = "account.payment.mode"
 
-    payment_type = fields.Selection(
+    fiscal_payment_mode = fields.Selection(
         selection=[
             ("01", "01 - Dinheiro"),
             ("02", "02 - Cheque"),
