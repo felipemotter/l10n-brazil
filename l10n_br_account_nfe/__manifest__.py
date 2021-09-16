@@ -13,6 +13,7 @@
     "depends": [
         "l10n_br_nfe",
         "account_payment_mode",
+        "account_payment_partner",
     ],
     "data": [
         "views/account_payment_mode.xml",
