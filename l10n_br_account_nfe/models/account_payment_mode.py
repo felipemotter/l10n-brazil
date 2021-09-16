@@ -25,8 +25,6 @@ class AccountPaymentMode(models.Model):
             ("99", "99 - Outros"),
         ],
         string="Meio de Pagamento da NF",
-        required=True,
-        default="99",
         help="Obrigatório o preenchimento do Grupo Informações de Pagamento"
         " para NF-e e NFC-e. Para as notas com finalidade de Ajuste"
         " ou Devolução o campo Forma de Pagamento deve ser preenchido"

@@ -5,10 +5,7 @@
         <field name="name">l10n_br_account.nfe.account.payment.mode.form</field>
         <field name="model">account.payment.mode</field>
         <field name="priority">97</field>
-        <field
-            name="inherit_id"
-            ref="account_payment_order.account_payment_mode_form"
-        />
+        <field name="inherit_id" ref="account_payment_mode.account_payment_mode_form" />
         <field name="arch" type="xml">
             <field name="payment_type" position="after">
                 <field name="fiscal_payment_mode" />
