@@ -43,4 +43,3 @@ class AccountInvoice(models.Model):
                     ),
                 ),
             ]
-            rec.nfe40_detPag.__class__._field_prefix = "nfe40_"
