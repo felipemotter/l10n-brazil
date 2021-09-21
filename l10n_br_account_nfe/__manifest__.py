@@ -9,7 +9,7 @@
     "development_status": "Alpha",
     "depends": [
         "l10n_br_nfe",
-        "account_payment_mode",
+        "l10n_br_account",
         "account_payment_partner",
     ],
     "data": [
