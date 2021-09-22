@@ -19,6 +19,22 @@ class TestGeneratePaymentInfo(TransactionCase):
         )
         payment_mode.fiscal_payment_mode = "18"
 
+        invoice_account_id = (
+            self.env["account.account"]
+            .create(
+                {
+                    "company_id": self.company.id,
+                    "user_type_id": self.env.ref(
+                        "account.data_account_type_receivable"
+                    ).id,
+                    "code": "RECTEST",
+                    "name": "Test receivable account",
+                    "reconcile": True,
+                }
+            )
+            .id
+        )
+
         self.invoice = self.env["account.invoice"].create(
             {
                 "company_id": self.company.id,
@@ -30,11 +46,23 @@ class TestGeneratePaymentInfo(TransactionCase):
                 "document_serie_id": self.env.ref(
                     "l10n_br_fiscal.empresa_lc_document_55_serie_1"
                 ).id,
+                "account_id": invoice_account_id,
             }
         )
 
-        account = self.env["account.account"].search(
-            [("company_id", "=", self.company.id)], limit=1
+        invoice_line_account_id = (
+            self.env["account.account"]
+            .create(
+                {
+                    "company_id": self.company.id,
+                    "user_type_id": self.env.ref(
+                        "account.data_account_type_expenses"
+                    ).id,
+                    "code": "EXPTEST",
+                    "name": "Test expense account",
+                }
+            )
+            .id
         )
 
         self.env["account.invoice.line"].create(
@@ -48,7 +76,7 @@ class TestGeneratePaymentInfo(TransactionCase):
                 "fiscal_operation_line_id": self.env.ref(
                     "l10n_br_fiscal.fo_venda_venda"
                 ).id,
-                "account_id": account.id,
+                "account_id": invoice_line_account_id,
             }
         )
 
