@@ -32,7 +32,6 @@ class AccountInvoice(models.Model):
                 self.generate_payment_info(inv)
 
     def generate_payment_info(self, inv):
-
         if not inv.payment_mode_id.fiscal_payment_mode:
             raise UserError(_("Document without Fiscal Payment Mode!"))
 
