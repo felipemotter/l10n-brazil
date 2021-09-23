@@ -84,6 +84,7 @@ class TestGeneratePaymentInfo(TransactionCase):
             {
                 "product_id": self.env.ref("product.product_product_3").id,
                 "quantity": 1,
+                "price_unit": 100,
                 "invoice_id": self.invoice.id,
                 "name": "something",
                 "fiscal_operation_id": self.env.ref("l10n_br_fiscal.fo_venda").id,
@@ -107,4 +108,4 @@ class TestGeneratePaymentInfo(TransactionCase):
         for detPag in self.invoice.nfe40_detPag:
             self.assertEqual(detPag.nfe40_indPag, "1", "Error in nfe40_indPag field.")
             self.assertEqual(detPag.nfe40_tPag, "18", "Error in nfe40_tPag field.")
-            self.assertEqual(detPag.nfe40_vPag, 450, "Error in nfe40_vPag field.")
+            self.assertEqual(detPag.nfe40_vPag, 472.5, "Error in nfe40_vPag field.")
