@@ -56,7 +56,7 @@ class AccountInvoice(models.Model):
 
     def generate_cobranca_info(self, inv):
 
-        fat_id = self.env["nfe.40.fat"].new(
+        fat_id = self.env["nfe.40.fat"].create(
             {
                 "nfe40_nFat": inv.number,
                 "nfe40_vOrig": inv.amount_financial_total_gross,
@@ -68,7 +68,7 @@ class AccountInvoice(models.Model):
         duplicatas = self.env["nfe.40.dup"]
         count = 1
         for mov in inv.financial_move_line_ids:
-            duplicatas += duplicatas.new(
+            duplicatas += duplicatas.create(
                 {
                     "nfe40_nDup": str(count).zfill(3),
                     "nfe40_dVenc": mov.date_maturity,
@@ -77,10 +77,10 @@ class AccountInvoice(models.Model):
             )
             count += 1
 
-        cobr_id = self.env["nfe.40.cobr"].new(
+        cobr_id = self.env["nfe.40.cobr"].create(
             {
                 "nfe40_fat": fat_id.id,
-                "nfe40_dup": (6, 0, duplicatas),
+                "nfe40_dup": [(6, 0, duplicatas.ids)],
             }
         )
 
