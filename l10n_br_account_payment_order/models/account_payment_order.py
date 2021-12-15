@@ -239,3 +239,9 @@ class AccountPaymentOrder(models.Model):
                 context_today.strftime("%d%m"),
                 str(self.file_number),
             )
+
+    def action_cancel(self):
+        super().action_cancel()
+        for order in self:
+            for payment_line in order.payment_line_ids:
+                payment_line.back_old_state()

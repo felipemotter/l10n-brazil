@@ -39,6 +39,7 @@ class AccountPaymentLineCreate(models.TransientModel):
         :return:
         """
         domain = super()._prepare_move_line_domain()
+        domain += [("order_generated", "=", False)]
 
         # self.ensure_one()
         # domain = [

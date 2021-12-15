@@ -23,6 +23,21 @@
         </field>
     </record>
 
+    <record id="view_account_move_line_filter" model="ir.ui.view">
+        <field name="name">Journal Items (Search)</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_account_move_line_filter" />
+        <field name="arch" type="xml">
+          <field name="account_id" position="after">
+            <filter
+                    string=" Sem Remessa Gerada (CNAB)"
+                    domain="[('order_generated', '=', False)]"
+                    name="no_order_generated"
+                />
+          </field>
+        </field>
+    </record>
+
     <record id="cnab_view_move_line_form_inherit" model="ir.ui.view">
         <field name="name">cnab.account.move.line.form.inherit</field>
         <field name="model">account.move.line</field>

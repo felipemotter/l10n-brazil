@@ -34,6 +34,12 @@ class AccountMoveLine(models.Model):
         copy=False,
     )
 
+    order_generated = fields.Boolean(
+        string="Gerado Ordem de Remessa (CNAB)",
+        compute="_compute_order_generated",
+        store=True,
+    )
+
     # No arquivo de retorno do CNAB o campo pode ter um tamanho diferente,
     # o tamanho do campo é preenchido na totalidade com zeros a esquerda,
     # e no odoo o tamanho do sequencial pode estar diferente
@@ -310,6 +316,24 @@ class AccountMoveLine(models.Model):
                             line.already_send_cnab = True
 
         return res
+
+    @api.depends(
+        "payment_line_ids",
+        "payment_line_ids.state",
+        "payment_line_ids.mov_instruction_code_id",
+    )
+    def _compute_order_generated(self):
+        for line in self:
+            # Para considerar a remessa gerada, precisa ter payment_lines
+            # com a instrução de entrada e que ela não esteja cancelada.
+            payment_lines = line.payment_line_ids.filtered(
+                lambda p: p.state != "cancel"
+                and p.mov_instruction_code_id in p.payment_mode_id.cnab_sending_code_id
+            )
+            if payment_lines:
+                line.order_generated = True
+            else:
+                line.order_generated = False
 
 
 class AccountPartialReconcile(models.Model):

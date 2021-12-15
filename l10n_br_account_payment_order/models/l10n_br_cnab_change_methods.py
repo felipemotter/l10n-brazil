@@ -301,7 +301,7 @@ class L10nBrCNABChangeMethods(models.Model):
         # será apagada a linha
         self.payment_situation = payment_situation
         # TODO criar um state removed ?
-        self.cnab_state = "done"
+        self.cnab_state = "draft"
         self.move_id.message_post(body=_(reason))
 
     def create_cnab_write_off(self, reason, payment_situation):
