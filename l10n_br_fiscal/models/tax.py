@@ -678,10 +678,11 @@ class Tax(models.Model):
             icms_origin,
         return
             {
-                'amount_included': float
-                'amount_not_included': float
-                'amount_withholding': float
-                'taxes': dict
+                "amount_included": float,
+                "amount_not_included": float,
+                "amount_withholding": float,
+                "estimate_tax": float,
+                "taxes": dict,
             }
         """
         result_amounts = {
