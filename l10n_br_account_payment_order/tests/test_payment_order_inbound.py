@@ -17,7 +17,7 @@ class TestPaymentOrderInbound(SavepointCase):
         super().setUpClass()
 
         cls.register_payments_model = cls.env["account.register.payments"].with_context(
-            active_model="account.invoice"
+            active_model="account.move"
         )
         cls.payment_model = cls.env["account.payment"]
 
@@ -158,7 +158,7 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(len(payment_order.payment_line_ids), 2)
 
         ctx = {
-            "active_model": "account.invoice",
+            "active_model": "account.move",
             "active_ids": [self.invoice_unicred.id],
         }
         register_payments = self.register_payments_model.with_context(ctx).create(
@@ -195,7 +195,7 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(payment_order.state, "open")
 
         ctx = {
-            "active_model": "account.invoice",
+            "active_model": "account.move",
             "active_ids": [self.invoice_unicred.id],
         }
         register_payments = self.register_payments_model.with_context(ctx).create(

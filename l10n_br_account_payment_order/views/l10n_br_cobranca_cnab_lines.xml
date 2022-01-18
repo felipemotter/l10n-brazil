@@ -82,7 +82,7 @@
                         context="{'group_by': 'order_id'}"
                     />
                     <filter
-                        name="group_by_partner_id"
+                        name="group_by_partner"
                         string="Cliente"
                         context="{'group_by': 'partner_id'}"
                     />

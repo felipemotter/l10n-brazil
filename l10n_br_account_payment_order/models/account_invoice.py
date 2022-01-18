@@ -11,7 +11,7 @@ from ..constants import BR_CODES_PAYMENT_ORDER
 
 
 class AccountInvoice(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     eval_payment_mode_instructions = fields.Text(
         string="Instruções de Cobrança do Modo de Pagamento",
