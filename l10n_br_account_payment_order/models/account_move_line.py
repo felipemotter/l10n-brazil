@@ -120,8 +120,8 @@ class AccountMoveLine(models.Model):
                 record.journal_entry_ref = record.name
             elif record.move_id.name:
                 record.journal_entry_ref = record.move_id.name
-            elif record.invoice_id and record.invoice_id.number:
-                record.journal_entry_ref = record.invoice_id.number
+            elif record.move_id and record.move_id.number:
+                record.journal_entry_ref = record.move_id.number
             else:
                 record.journal_entry_ref = "*" + str(record.move_id.id)
 
@@ -144,7 +144,7 @@ class AccountMoveLine(models.Model):
                     # TODO: Aguardando a possibilidade de alteração no
                     #  modulo account_payment_order na v14
                     "ml_maturity_date": self.date_maturity,
-                    "invoice_id": self.invoice_id.id,
+                    "move_id": self.move_id.id,
                 }
             )
 

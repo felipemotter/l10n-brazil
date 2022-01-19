@@ -49,7 +49,7 @@
         <field name="arch" type="xml">
             <tree string="CNAB Evento Lines">
                 <field name="bank_payment_line_id" />
-                <field name="invoice_id" />
+                <field name="move_id" />
                 <field name="partner_id" />
                 <field name="occurrence_date" />
                 <field name="real_payment_date" />
@@ -82,7 +82,7 @@
                 </header>
                 <group attrs="{'readonly': [('state', '=', 'done')]}">
                     <group>
-                        <field name="invoice_id" />
+                        <field name="move_id" />
                         <field name="partner_id" />
                         <field name="occurrence_date" />
                         <field name="real_payment_date" />

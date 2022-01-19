@@ -19,7 +19,7 @@ class TestPaymentOrderChange(TestL10nBrAccountPaymentOder):
             "l10n_br_account_payment_order." "demo_invoice_automatic_test"
         )
         if cls.invoice_auto.state == "draft":
-            cls.invoice_auto.action_invoice_open()
+            cls.invoice_auto.action_post()
 
         assert cls.invoice_auto.move_id, "Move not created for open invoice"
 

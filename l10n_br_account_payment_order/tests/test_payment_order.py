@@ -34,17 +34,19 @@ class TestPaymentOrder(SavepointCase):
 
         self.assertEqual(len(line_product_tax), 1)
         # I validate invoice by creating on
-        self.invoice_product_tax_boleto.action_invoice_open()
+        self.invoice_product_tax_boleto.action_post()
         # I check that the invoice state is "Open"
-        self.assertEqual(self.invoice_product_tax_boleto.state, "open")
+        self.assertEqual(
+            self.invoice_product_tax_boleto.invoice_payment_state, "not_paid"
+        )
 
     def test_payment_mode_without_payment_order(self):
         """ Test Invoice when Payment Mode not generate Payment Order. """
         self.invoice_cheque._onchange_payment_mode_id()
         # I validate invoice by creating on
-        self.invoice_cheque.action_invoice_open()
+        self.invoice_cheque.action_post()
         # I check that the invoice state is "Open"
-        self.assertEqual(self.invoice_cheque.state, "open")
+        self.assertEqual(self.invoice_cheque.invoice_payment_state, "not_paid")
         payment_order = self.env["account.payment.order"].search(
             [("payment_mode_id", "=", self.invoice_cheque.payment_mode_id.id)]
         )

@@ -46,9 +46,9 @@
 <!--                <filter name='tarifa_cobranca'-->
 <!--                        string='Contém Tarifa'-->
 <!--                        domain="[('tarifa_cobranca','>','0')]"/>-->
-<!--                <filter name='invoice_id'-->
+<!--                <filter name='move_id'-->
 <!--                        string='Contém Fatura'-->
-<!--                        domain="[('invoice_id','!=',False)]"/>-->
+<!--                        domain="[('move_id','!=',False)]"/>-->
 
 <!--                <filter string="Parceiro"-->
 <!--                        context="{'group_by': 'partner_id'}"/>-->

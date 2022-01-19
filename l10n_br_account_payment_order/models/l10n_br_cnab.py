@@ -164,9 +164,9 @@ class L10nBrCnab(models.Model):
             if evento.data_credito
             else "",
             "identificacao_titulo_empresa": evento.identificacao_titulo_empresa,
-            "invoice_id": bank_payment_line_id.payment_line_ids[
+            "move_id": bank_payment_line_id.payment_line_ids[
                 :1
-            ].move_line_id.invoice_id.id,
+            ].move_line_id.move_id.id,
             "juros_mora_multa": float(evento.juros_mora_multa) / 100,
             "lote_id": lote_id.id,
             "nosso_numero": str(evento.nosso_numero),
@@ -230,9 +230,12 @@ class L10nBrCnab(models.Model):
                         evento.nosso_numero
                     )
                     move_line = pay_order_line_id.move_line_id
-                    invoice = move_line.invoice_id
+                    invoice = move_line.move_id
                     payment_mode = invoice.payment_mode_id
-                    if bank_state == "liquidada" and invoice.state == "open":
+                    if (
+                        bank_state == "liquidada"
+                        and invoice.invoice_payment_state == "not_paid"
+                    ):
                         ident_titulo_empresa = evento.identificacao_titulo_empresa
                         line_dict = {
                             "name": evento.nosso_numero,
@@ -400,8 +403,8 @@ class L10nBrCnab(models.Model):
             if evento.data_credito
             else "",
             "identificacao_titulo_empresa": evento.identificacao_titulo_empresa,
-            "invoice_id": cnab_event_id.invoice_id.id
-            or bank_payment_line_id.payment_line_ids[:1].move_line_id.invoice_id.id,
+            "move_id": cnab_event_id.move_id.id
+            or bank_payment_line_id.payment_line_ids[:1].move_line_id.move_id.id,
             "juros_mora_multa": cnab_event_id.juros_mora_multa
             or float(evento.juros_mora_multa) / 100,
             "lote_id": cnab_event_id.lote_id.id or lote_id.id,

@@ -62,7 +62,7 @@ class AccountPaymentLineCreate(models.TransientModel):
         # elif self.date_type == "move":
         #     domain.append(("date", "<=", self.move_date))
         # if self.invoice:
-        #     domain.append(("invoice_id", "!=", False))
+        #     domain.append(("move_id", "!=", False))
         # if self.payment_mode:
         #     if self.payment_mode == "same":
         #         domain.append(

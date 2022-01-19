@@ -76,7 +76,7 @@
                         <tree>
                             <field name="lot_id" />
                             <field name="bank_payment_line_id" />
-                            <field name="invoice_id" />
+                            <field name="move_id" />
                             <field name="partner_id" />
                             <field name="occurrence_date" />
                             <field name="real_payment_date" />

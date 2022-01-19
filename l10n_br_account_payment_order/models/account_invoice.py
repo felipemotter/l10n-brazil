@@ -65,7 +65,7 @@ class AccountInvoice(models.Model):
                 }
             )
 
-    def action_invoice_cancel(self):
+    def button_cancel(self):
         for record in self:
             if record.payment_mode_id.payment_method_code in BR_CODES_PAYMENT_ORDER:
                 for line in record.move_id.line_ids:
@@ -73,7 +73,7 @@ class AccountInvoice(models.Model):
                     # a linha ou mandar uma solicitação de Baixa
                     line.update_cnab_for_cancel_invoice()
 
-        return super().action_invoice_cancel()
+        return super().button_cancel()
 
     def get_invoice_fiscal_number(self):
         """
@@ -139,11 +139,11 @@ class AccountInvoice(models.Model):
 
     def invoice_validate(self):
         result = super().invoice_validate()
-        filtered_invoice_ids = self.filtered(
+        filtered_move_ids = self.filtered(
             lambda s: (
                 s.payment_mode_id and s.payment_mode_id.auto_create_payment_order
             )
         )
-        if filtered_invoice_ids:
-            filtered_invoice_ids.create_account_payment_line()
+        if filtered_move_ids:
+            filtered_move_ids.create_account_payment_line()
         return result

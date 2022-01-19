@@ -18,10 +18,10 @@ class TestPaymentOrderManualWorkflow(TestL10nBrAccountPaymentOder):
         )
 
     def _invoice_confirm_flow(self):
-        self.invoice_manual_test.action_invoice_open()
+        self.invoice_manual_test.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.invoice_manual_test.state, "open")
+        self.assertEqual(self.invoice_manual_test.invoice_payment_state, "not_paid")
 
     def test_invoice_button(self):
         """ Test Invoice Button to Add to a payment order"""

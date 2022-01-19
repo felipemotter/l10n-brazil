@@ -49,10 +49,10 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(self.invoice_cef.state, "draft")
 
         # I validate invoice by creating on
-        self.invoice_cef.action_invoice_open()
+        self.invoice_cef.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.invoice_cef.state, "open")
+        self.assertEqual(self.invoice_cef.invoice_payment_state, "not_paid")
 
         # I check that now there is a move attached to the invoice
         assert self.invoice_cef.move_id, "Move not created for open invoice"
@@ -73,7 +73,7 @@ class TestPaymentOrderInbound(SavepointCase):
         ):
             self.assertEqual(
                 line.journal_entry_ref,
-                line.invoice_id.name,
+                line.move_id.name,
                 "Error with compute field journal_entry_ref",
             )
 
@@ -92,7 +92,7 @@ class TestPaymentOrderInbound(SavepointCase):
             )
             self.assertEqual(
                 line.journal_entry_ref,
-                line.invoice_id.name,
+                line.move_id.name,
                 "Error with compute field journal_entry_ref",
             )
             # testar com a parcela 700
@@ -142,7 +142,7 @@ class TestPaymentOrderInbound(SavepointCase):
             payment_order.action_done_cancel()
 
         # Testar Cancelamento
-        self.invoice_cef.action_invoice_cancel()
+        self.invoice_cef.button_cancel()
 
     def test_payment_outside_cnab_payment_order_draft(self):
         """
@@ -150,7 +150,7 @@ class TestPaymentOrderInbound(SavepointCase):
         apagar as linhas de pagamentos.
         """
         # I validate invoice by creating on
-        self.invoice_unicred.action_invoice_open()
+        self.invoice_unicred.action_post()
 
         payment_order = self.env["account.payment.order"].search(
             [("payment_mode_id", "=", self.invoice_unicred.payment_mode_id.id)]
@@ -185,7 +185,7 @@ class TestPaymentOrderInbound(SavepointCase):
         gerar erro por ter uma Instrução CNAB a ser enviada.
         """
         # I validate invoice by creating on
-        self.invoice_unicred.action_invoice_open()
+        self.invoice_unicred.action_post()
 
         payment_order = self.env["account.payment.order"].search(
             [("payment_mode_id", "=", self.invoice_unicred.payment_mode_id.id)]
@@ -217,14 +217,14 @@ class TestPaymentOrderInbound(SavepointCase):
         """ Test Cancel Invoice when Payment Order Draft."""
 
         # I validate invoice by creating on
-        self.invoice_unicred.action_invoice_open()
+        self.invoice_unicred.action_post()
         payment_order = self.env["account.payment.order"].search(
             [("payment_mode_id", "=", self.invoice_unicred.payment_mode_id.id)]
         )
         self.assertEqual(len(payment_order.payment_line_ids), 2)
 
         # Testar Cancelamento
-        self.invoice_unicred.action_invoice_cancel()
+        self.invoice_unicred.button_cancel()
 
         self.assertEqual(len(payment_order.payment_line_ids), 0)
         # Nesse caso a account.move deverá ter sido apagada
@@ -236,7 +236,7 @@ class TestPaymentOrderInbound(SavepointCase):
         """
         self.partner_akretion = self.env.ref("l10n_br_base.res_partner_akretion")
         # I validate invoice by creating on
-        self.invoice_cef.action_invoice_open()
+        self.invoice_cef.action_post()
 
         payment_order = self.env["account.payment.order"].search(
             [("payment_mode_id", "=", self.invoice_cef.payment_mode_id.id)]
@@ -279,10 +279,10 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(self.demo_invoice_auto.state, "draft")
 
         # I validate invoice by creating on
-        self.demo_invoice_auto.action_invoice_open()
+        self.demo_invoice_auto.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.demo_invoice_auto.state, "open")
+        self.assertEqual(self.demo_invoice_auto.invoice_payment_state, "not_paid")
 
         # I check that now there is a move attached to the invoice
         assert self.demo_invoice_auto.move_id, "Move not created for open invoice"
@@ -336,10 +336,10 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(self.demo_invoice_auto.state, "draft")
 
         # I validate invoice by creating on
-        self.demo_invoice_auto.action_invoice_open()
+        self.demo_invoice_auto.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.demo_invoice_auto.state, "open")
+        self.assertEqual(self.demo_invoice_auto.invoice_payment_state, "not_paid")
 
         # I check that now there is a move attached to the invoice
         assert self.demo_invoice_auto.move_id, "Move not created for open invoice"
@@ -396,10 +396,10 @@ class TestPaymentOrderInbound(SavepointCase):
         self.assertEqual(self.demo_invoice_auto.state, "draft")
 
         # I validate invoice by creating on
-        self.demo_invoice_auto.action_invoice_open()
+        self.demo_invoice_auto.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.demo_invoice_auto.state, "open")
+        self.assertEqual(self.demo_invoice_auto.invoice_payment_state, "not_paid")
 
         # I check that now there is a move attached to the invoice
         assert self.demo_invoice_auto.move_id, "Move not created for open invoice"
@@ -414,7 +414,7 @@ class TestPaymentOrderInbound(SavepointCase):
         payment_order.generated2uploaded()
         payment_order.action_done()
 
-        self.demo_invoice_auto.action_invoice_cancel()
+        self.demo_invoice_auto.button_cancel()
 
         change_payment_order = self.env["account.payment.order"].search(
             [("state", "=", "draft"), ("payment_mode_id", "=", inv_payment_mode_id.id)]

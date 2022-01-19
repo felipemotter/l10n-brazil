@@ -17,10 +17,12 @@ class TestPaymentOrder(SavepointCase):
 
     def test_cancel_invoice_no_payment_mode_pay(self):
         """ Test Pay Invoice without payment mode in cash"""
-        self.invoice_customer_without_paymeny_mode.action_invoice_open()
+        self.invoice_customer_without_paymeny_mode.action_post()
 
         # I check that the invoice state is "Open"
-        self.assertEqual(self.invoice_customer_without_paymeny_mode.state, "open")
+        self.assertEqual(
+            self.invoice_customer_without_paymeny_mode.invoice_payment_state, "not_paid"
+        )
 
         open_amount = self.invoice_customer_without_paymeny_mode.residual
         # I totally pay the Invoice
@@ -38,7 +40,7 @@ class TestPaymentOrder(SavepointCase):
 
     def test_cancel_invoice_no_payment_mode_cancel(self):
         """ Test Cancel Invoice Without Payment Mode """
-        self.invoice_customer_without_paymeny_mode.action_invoice_cancel()
+        self.invoice_customer_without_paymeny_mode.button_cancel()
 
         # I check that the invoice state is "Cancel"
         self.assertEqual(self.invoice_customer_without_paymeny_mode.state, "cancel")

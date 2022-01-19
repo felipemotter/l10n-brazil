@@ -41,7 +41,7 @@
         <field name="arch" type="xml">
             <search string="Busque cobranças">
 
-                <!--<filter name="expt_date" string="Data de exportacao" domain="[('stored_invoice_id', '&lt;&gt;', False)]"/>-->
+                <!--<filter name="expt_date" string="Data de exportacao" domain="[('stored_move_id', '&lt;&gt;', False)]"/>-->
 
                 <!-- Opções para busca -->
                 <field name="move_line_id" />
