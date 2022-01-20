@@ -13,6 +13,8 @@
         "l10n_br_base",
         "account_payment_order",
         "l10n_br_account_due_list",
+        # TODO Retirar - colocado apenas para testes
+        "l10n_br_coa_generic",
     ],
     "data": [
         # Security
