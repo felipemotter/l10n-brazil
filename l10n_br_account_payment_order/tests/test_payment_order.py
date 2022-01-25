@@ -2,7 +2,7 @@
 #   Magno Costa <magno.costa@akretion.com.br>
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 from odoo.tests import SavepointCase, tagged
 
 
@@ -55,7 +55,7 @@ class TestPaymentOrder(SavepointCase):
     def test_bra_number_constrains(self):
         """ Test bra_number constrains. """
         self.banco_bradesco = self.env["res.bank"].search([("code_bc", "=", "033")])
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(UserError):
             self.env["res.partner.bank"].create(
                 dict(
                     bank_id=self.banco_bradesco.id,
