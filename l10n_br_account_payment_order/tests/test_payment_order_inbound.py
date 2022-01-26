@@ -297,12 +297,18 @@ class TestPaymentOrderInbound(SavepointCase):
         payment_order.generated2uploaded()
         payment_order.action_done()
 
-        open_amount = self.demo_invoice_auto.residual
-        # I totally pay the Invoice
-        self.demo_invoice_auto.pay_and_reconcile(
-            self.env["account.journal"].search([("type", "=", "cash")], limit=1),
-            open_amount,
+        register_payments = (
+            self.env["account.payment.register"]
+            .with_context(active_ids=self.demo_invoice_auto.id)
+            .create(
+                {
+                    "journal_id": self.env["account.journal"]
+                    .search([("type", "=", "cash")], limit=1)
+                    .id
+                }
+            )
         )
+        register_payments.create_payments()
 
         # I verify that invoice is now in Paid state
         self.assertEqual(

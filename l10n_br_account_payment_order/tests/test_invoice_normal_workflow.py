@@ -23,16 +23,23 @@ class TestPaymentOrder(SavepointCase):
             self.invoice_customer_without_paymeny_mode.invoice_payment_state, "not_paid"
         )
 
-        open_amount = self.invoice_customer_without_paymeny_mode.residual
-        # I totally pay the Invoice
-        self.invoice_customer_without_paymeny_mode.pay_and_reconcile(
-            self.env["account.journal"].search([("type", "=", "cash")], limit=1),
-            open_amount,
+        # TODO testar colocar valor de pagamento
+        register_payments = (
+            self.env["account.payment.register"]
+            .with_context(active_ids=self.invoice_customer_without_paymeny_mode.id)
+            .create(
+                {
+                    "journal_id": self.env["account.journal"]
+                    .search([("type", "=", "cash")], limit=1)
+                    .id
+                }
+            )
         )
+        register_payments.create_payments()
 
         # I verify that invoice is now in Paid state
         self.assertEqual(
-            self.invoice_customer_without_paymeny_mode.state,
+            self.invoice_customer_without_paymeny_mode.invoice_payment_state,
             "paid",
             "Invoice is not in Paid state",
         )
