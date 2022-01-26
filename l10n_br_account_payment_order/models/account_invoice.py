@@ -38,11 +38,14 @@ class AccountInvoice(models.Model):
             "l10n_br_account_payment_order.account_analytic_tag_tax"
         )
 
+        # Este comportamento de remoção das linhas da fatura com base
+        # no tax_analytic_tag_id é realmente válido e necessário?
         to_remove_invoice_line_ids = self.invoice_line_ids.filtered(
             lambda i: tax_analytic_tag_id in i.analytic_tag_ids
         )
 
-        self.invoice_line_ids -= to_remove_invoice_line_ids
+        for r in to_remove_invoice_line_ids:
+            self.update({"invoice_line_ids": [(3, r.id, 0)]})
 
         payment_mode_id = self.payment_mode_id
         if payment_mode_id.product_tax_id:
@@ -56,14 +59,7 @@ class AccountInvoice(models.Model):
                 "analytic_tag_ids": [(6, 0, [tax_analytic_tag_id.id])],
             }
 
-            self.update(
-                {
-                    "invoice_line_ids": [
-                        (6, 0, self.invoice_line_ids.ids),
-                        (0, 0, invoice_line_data),
-                    ]
-                }
-            )
+            self.update({"invoice_line_ids": [(0, 0, invoice_line_data)]})
 
     def button_cancel(self):
         for record in self:
