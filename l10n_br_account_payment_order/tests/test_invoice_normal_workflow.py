@@ -17,7 +17,6 @@ class TestPaymentOrder(SavepointCase):
 
     def test_cancel_invoice_no_payment_mode_pay(self):
         """ Test Pay Invoice without payment mode in cash"""
-        self.invoice_customer_without_paymeny_mode.action_post()
 
         # I check that the invoice state is "Open"
         self.assertEqual(
