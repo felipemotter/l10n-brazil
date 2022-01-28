@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<odoo noupdate="1">
+<odoo noupdate="True">
 
     <!-- Account Payment Mode Manual Test -->
-
     <record id="payment_mode_automatic_test_main" model="account.payment.mode">
         <field name="name">Cobrança Boleto (Automatico Test)</field>
         <field name="company_id" ref="base.main_company" />
