@@ -144,7 +144,7 @@ class AccountMoveLine(models.Model):
                     # TODO: Aguardando a possibilidade de alteração no
                     #  modulo account_payment_order na v14
                     "ml_maturity_date": self.date_maturity,
-                    "invoice_id": self.invoice_id.id,
+                    "move_id": self.move_id.id,
                 }
             )
 
@@ -204,7 +204,6 @@ class AccountMoveLine(models.Model):
 
             if record.payment_situation not in ["inicial", "aberta"]:
                 values.pop("payment_situation", False)
-
         return super().write(values)
 
     def get_balance(self):

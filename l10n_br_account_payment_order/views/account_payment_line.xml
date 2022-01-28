@@ -46,7 +46,7 @@
 
             <field name="move_line_id" position="before">
                 <field
-                    name="invoice_id"
+                    name="move_id"
                     attrs="{'readonly': [('payment_method_code', 'not in', ('400', '240', '500'))]}"
                 />
             </field>

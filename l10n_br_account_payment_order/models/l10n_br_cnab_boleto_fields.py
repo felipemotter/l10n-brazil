@@ -4,7 +4,6 @@
 
 from odoo import fields, models
 
-
 from ..constants import BOLETO_ESPECIE
 
 
