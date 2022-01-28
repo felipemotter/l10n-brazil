@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
 from odoo.exceptions import UserError
-from odoo.tests import SavepointCase, tagged
+from odoo.tests import Form, SavepointCase, tagged
 
 
 @tagged("post_install", "-at_install")
@@ -17,14 +17,20 @@ class TestPaymentOrder(SavepointCase):
             "l10n_br_account_payment_order." "demo_invoice_payment_order_bb_cnab400"
         )
 
+        cls.payment_mode_cobranca_bb400 = cls.env.ref(
+            "l10n_br_account_payment_order." "payment_mode_cobranca_bb400"
+        )
+
         # Product Tax Boleto
         cls.invoice_cheque = cls.env.ref(
             "l10n_br_account_payment_order.demo_invoice_payment_order_cheque"
         )
 
     def test_product_tax_boleto(self):
-        """ Test Invoice where Payment Mode has Product Tax. """
-        self.invoice_product_tax_boleto._onchange_payment_mode_id()
+        """Test Invoice where Payment Mode has Product Tax."""
+
+        with Form(self.invoice_product_tax_boleto) as inv:
+            inv.payment_mode_id = self.payment_mode_cobranca_bb400
 
         # Produto Taxa adicionado
         line_product_tax = self.invoice_product_tax_boleto.invoice_line_ids.filtered(
@@ -36,12 +42,10 @@ class TestPaymentOrder(SavepointCase):
         # I validate invoice by creating on
         self.invoice_product_tax_boleto.action_post()
         # I check that the invoice state is "Open"
-        self.assertEqual(
-            self.invoice_product_tax_boleto.invoice_payment_state, "not_paid"
-        )
+        self.assertEqual(inv.invoice_payment_state, "not_paid")
 
     def test_payment_mode_without_payment_order(self):
-        """ Test Invoice when Payment Mode not generate Payment Order. """
+        """Test Invoice when Payment Mode not generate Payment Order."""
         self.invoice_cheque._onchange_payment_mode_id()
         # I validate invoice by creating on
         self.invoice_cheque.action_post()
@@ -53,7 +57,7 @@ class TestPaymentOrder(SavepointCase):
         self.assertEqual(len(payment_order), 0)
 
     def test_bra_number_constrains(self):
-        """ Test bra_number constrains. """
+        """Test bra_number constrains."""
         self.banco_bradesco = self.env["res.bank"].search([("code_bc", "=", "033")])
         with self.assertRaises(UserError):
             self.env["res.partner.bank"].create(
