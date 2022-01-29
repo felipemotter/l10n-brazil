@@ -33,12 +33,8 @@ class AccountMove(models.Model):
         string="Instruções de cobrança", help="Instruções Extras da Ordem de Pagamento"
     )
 
-    # TODO - Linhas não estão sendo removidas, o que está duplicando ou mantendo
-    #  linha em casos onde o Modo de Pagto não possui um Produto Taxa e nos testes
-    #  ocorre alteração do Modo de de PAgto o que gera erro
     @api.onchange("payment_mode_id")
     def _onchange_payment_mode_id(self):
-
         tax_analytic_tag_id = self.env.ref(
             "l10n_br_account_payment_order.account_analytic_tag_tax"
         )
@@ -47,22 +43,26 @@ class AccountMove(models.Model):
             lambda i: tax_analytic_tag_id in i.analytic_tag_ids
         )
 
-        self.invoice_line_ids -= to_remove_invoice_line_ids
+        for r in to_remove_invoice_line_ids:
+            self.invoice_line_ids = [(3, r.id, 0)]
 
         payment_mode_id = self.payment_mode_id
         if payment_mode_id.product_tax_id:
-            invoice_line_data = {
-                "name": "Taxa adicional do modo de pagamento escolhido",
-                "account_id": payment_mode_id.product_tax_account_id.id,
-                "product_id": payment_mode_id.product_tax_id.id,
-                "price_unit": payment_mode_id.product_tax_id.lst_price,
-                "quantity": 1,
-                "analytic_tag_ids": [(6, 0, [tax_analytic_tag_id.id])],
-            }
-
-            self.update({"invoice_line_ids": [(0, 0, invoice_line_data)]})
-            # Sem o metodo abaixo ocorre erro de lançamentos desbalanceados
-            self._move_autocomplete_invoice_lines_values()
+            line = self.invoice_line_ids.new(
+                {
+                    "name": "Taxa adicional do modo de pagamento escolhido",
+                    "product_id": payment_mode_id.product_tax_id.id,
+                    "account_id": payment_mode_id.product_tax_account_id.id,
+                    "analytic_tag_ids": [(6, 0, [tax_analytic_tag_id.id])],
+                    "price_unit": payment_mode_id.product_tax_id.lst_price,
+                    "quantity": 1,
+                    "move_id": self.id,
+                }
+            )
+            line._onchange_price_subtotal()
+        self.with_context(check_move_validity=False)._recompute_dynamic_lines(
+            recompute_all_taxes=True
+        )
 
     def button_cancel(self):
         for record in self:
