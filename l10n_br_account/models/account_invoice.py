@@ -729,8 +729,8 @@ class AccountMove(models.Model):
         """Sets fiscal document to draft state and cancel and set to draft
         the related invoice for both documents remain equivalent state."""
         for i in self.filtered(lambda d: d.document_type_id):
-            i.action_cancel()
-            i.action_invoice_draft()
+            i.button_cancel()
+            i.button_draft()
 
     def action_invoice_open(self):
         result = super().action_invoice_open()
