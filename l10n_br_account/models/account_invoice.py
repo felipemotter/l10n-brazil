@@ -681,13 +681,6 @@ class AccountMove(models.Model):
                     invoice.fiscal_document_id._document_date()
                     invoice.fiscal_document_id._document_number()
 
-    def action_move_create(self):
-        # TODO FIXME migrate. No such method in Odoo 13+
-        result = super().action_move_create()
-        self.mapped("fiscal_document_id").filtered(
-            lambda d: d.document_type_id
-        ).action_document_confirm()
-        return result
 
     def action_invoice_draft(self):
         # TODO FIXME migrate. No such method in Odoo 13+
@@ -732,25 +725,33 @@ class AccountMove(models.Model):
             i.action_cancel()
             i.action_invoice_draft()
 
-    def action_invoice_open(self):
-        result = super().action_invoice_open()
+    def action_post(self):
+        result = super().action_post()
 
-        for record in self.filtered(lambda i: i.refund_move_id):
-            if record.state == "open":
-                # Ao confirmar uma fatura/documento fiscal se é uma devolução
-                # é feito conciliado com o documento de origem para abater
-                # o valor devolvido pelo documento de refund
-                to_reconcile_lines = self.env["account.move.line"]
-                for line in record.move_id.line_ids:
-                    if line.account_id.id == record.account_id.id:
-                        to_reconcile_lines += line
-                    if line.reconciled:
-                        line.remove_move_reconcile()
-                for line in record.refund_move_id.move_id.line_ids:
-                    if line.account_id.id == record.refund_move_id.account_id.id:
-                        to_reconcile_lines += line
+        self.mapped("fiscal_document_id").filtered(
+            lambda d: d.document_type_id
+        ).action_document_confirm()
 
-                to_reconcile_lines.filtered(lambda l: l.reconciled).reconcile()
+        # TODO FIXME
+        # Deixar a migração das funcionalidades do refund por último.
+        # Verificar se ainda haverá necessidade desse código.
+
+        # for record in self.filtered(lambda i: i.refund_move_id):
+        #     if record.state == "open":
+        #         # Ao confirmar uma fatura/documento fiscal se é uma devolução
+        #         # é feito conciliado com o documento de origem para abater
+        #         # o valor devolvido pelo documento de refund
+        #         to_reconcile_lines = self.env["account.move.line"]
+        #         for line in record.move_id.line_ids:
+        #             if line.account_id.id == record.account_id.id:
+        #                 to_reconcile_lines += line
+        #             if line.reconciled:
+        #                 line.remove_move_reconcile()
+        #         for line in record.refund_move_id.move_id.line_ids:
+        #             if line.account_id.id == record.refund_move_id.account_id.id:
+        #                 to_reconcile_lines += line
+
+        #         to_reconcile_lines.filtered(lambda l: l.reconciled).reconcile()
 
         return result
 
