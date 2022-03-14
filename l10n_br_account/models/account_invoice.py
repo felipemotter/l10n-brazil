@@ -682,8 +682,7 @@ class AccountMove(models.Model):
                     invoice.fiscal_document_id._document_number()
 
 
-    def action_invoice_draft(self):
-        # TODO FIXME migrate. No such method in Odoo 13+
+    def button_draft(self):
         for i in self.filtered(lambda d: d.document_type_id):
             if i.state_edoc == SITUACAO_EDOC_CANCELADA:
                 if i.issuer == DOCUMENT_ISSUER_COMPANY:
@@ -697,7 +696,7 @@ class AccountMove(models.Model):
                     )
             if i.state_edoc != SITUACAO_EDOC_EM_DIGITACAO:
                 i.fiscal_document_id.action_document_back2draft()
-        return super().action_invoice_draft()
+        return super().button_draft()
 
     def action_document_send(self):
         invoices = self.filtered(lambda d: d.document_type_id)
@@ -722,8 +721,8 @@ class AccountMove(models.Model):
         """Sets fiscal document to draft state and cancel and set to draft
         the related invoice for both documents remain equivalent state."""
         for i in self.filtered(lambda d: d.document_type_id):
-            i.action_cancel()
-            i.action_invoice_draft()
+            i.button_cancel()
+            i.button_draft()
 
     def action_post(self):
         result = super().action_post()
@@ -755,10 +754,10 @@ class AccountMove(models.Model):
 
         return result
 
-    def action_invoice_cancel(self):
+    def button_cancel(self):
         for i in self.filtered(lambda d: d.document_type_id):
             i.fiscal_document_id.action_document_cancel()
-        return super().action_invoice_cancel()
+        return super().button_cancel()
 
     def view_xml(self):
         self.ensure_one()
