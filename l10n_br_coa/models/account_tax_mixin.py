@@ -18,9 +18,9 @@ class AccountTaxMixin(models.AbstractModel):
         for repartition in self.invoice_repartition_line_ids.filtered(
             lambda r: r.repartition_type == "tax"
         ):
-            repartition.factor_percent = 100 if not self.deductible else -100
+            repartition.factor_percent = -100 if not self.deductible else 100
 
         for repartition in self.refund_repartition_line_ids.filtered(
             lambda r: r.repartition_type == "tax"
         ):
-            repartition.factor_percent = 100 if not self.deductible else -100
+            repartition.factor_percent = -100 if not self.deductible else 100
