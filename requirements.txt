@@ -1,5 +1,5 @@
 # generated from manifests external_dependencies
-erpbrasil.assinatura
+-e git+https://github.com/erpbrasil/erpbrasil.assinatura@master#egg=erpbrasil.assinatura
 erpbrasil.base
 erpbrasil.edoc
 erpbrasil.transmissao
