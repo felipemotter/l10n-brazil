@@ -284,7 +284,7 @@ class AccountMoveLine(models.Model):
         # price_total, adjustments would be necessary that in practice would not have
         # much effect.
 
-            return {}
+        return {}
 
     def _get_price_total_and_subtotal(
         self,
@@ -394,12 +394,8 @@ class AccountMoveLine(models.Model):
 
             fol = self.env.context.get("fiscal_operation_line_id")
             if fol and not fol.fiscal_operation_id.deductible_taxes:
-                result["price_subtotal"] = (
-                    taxes_res["total_excluded"] - taxes_res["amount_tax_included"]
-                )
-                result["price_total"] = (
-                    taxes_res["total_included"] - taxes_res["amount_tax_included"]
-                )
+                result['price_subtotal'] = taxes_res['total_excluded']
+                result['price_total'] = taxes_res['total_included'] - taxes_res['amount_tax_included'] - taxes_res['amount_tax_not_included']
 
         return result
 
