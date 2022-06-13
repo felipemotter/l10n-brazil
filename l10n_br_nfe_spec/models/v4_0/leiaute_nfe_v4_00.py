@@ -1218,7 +1218,11 @@ class Tipi(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tipi"
 
-    
+    nfe40_choice3 = fields.Selection([
+        ('nfe40_IPITrib', 'IPITrib'),
+        ('nfe40_IPINT', 'IPINT')],
+        "IPITrib/IPINT")
+
     nfe40_CNPJProd = fields.Char(
         xsd_type="TCnpj",
         string="CNPJ do produtor da mercadoria",
@@ -1243,11 +1247,13 @@ class Tipi(models.AbstractModel):
     )
     nfe40_IPITrib = fields.Many2one(
         string="IPITrib",
-        comodel_name="nfe.40.ipitrib"
+        comodel_name="nfe.40.ipitrib",
+        xsd_required=True,
     )
     nfe40_IPINT = fields.Many2one(
         string="IPINT",
-        comodel_name="nfe.40.ipint"
+        comodel_name="nfe.40.ipint",
+        xsd_required=True,
     )
 
 
@@ -1949,11 +1955,13 @@ class Nfref(models.AbstractModel):
         help=(
             "Dados da NF modelo 1/1A referenciada ou NF modelo 2 referenciada"
         ),
-        comodel_name="nfe.40.refnf"
+        comodel_name="nfe.40.refnf",
+        xsd_required=True,
     )
     nfe40_refNFP = fields.Many2one(
         string="Grupo com as informações NF de produtor referenciada",
-        comodel_name="nfe.40.refnfp"
+        comodel_name="nfe.40.refnfp",
+        xsd_required=True,
     )
     nfe40_refCTe = fields.Char(
         xsd_type="TChNFe",
@@ -1966,7 +1974,8 @@ class Nfref(models.AbstractModel):
     nfe40_refECF = fields.Many2one(
         string="Grupo do Cupom Fiscal vinculado à NF",
         help="Grupo do Cupom Fiscal vinculado à NF-e",
-        comodel_name="nfe.40.refecf"
+        comodel_name="nfe.40.refecf",
+            xsd_required=True,
     )
 
 
@@ -2328,7 +2337,7 @@ class Det(models.AbstractModel):
     )
     nfe40_impostoDevol = fields.Many2one(
         string="impostoDevol",
-        comodel_name="nfe.40.impostodevol"
+        comodel_name="nfe.40.impostodevol",
     )
     nfe40_infAdProd = fields.Char(
         string="Informações adicionais do produto",
@@ -2568,7 +2577,8 @@ class Prod(models.AbstractModel):
     )
     nfe40_veicProd = fields.Many2one(
         string="Veículos novos",
-        comodel_name="nfe.40.veicprod"
+        comodel_name="nfe.40.veicprod",
+        xsd_required=True,
     )
     nfe40_med = fields.Many2one(
         string="grupo do detalhamento de Medicamentos e de matérias",
@@ -2576,14 +2586,16 @@ class Prod(models.AbstractModel):
             "grupo do detalhamento de Medicamentos e de matérias-primas "
             "farmacêuticas"
         ),
-        comodel_name="nfe.40.med"
+        comodel_name="nfe.40.med",
+        xsd_required=True,
     )
     nfe40_arma = fields.One2many("nfe.40.arma", "nfe40_arma_prod_id",
         string="Armamentos"
     )
     nfe40_comb = fields.Many2one(
         string="Informar apenas para operações com combustíveis líquidos",
-        comodel_name="nfe.40.comb"
+        comodel_name="nfe.40.comb",
+        xsd_required=True,
     )
     nfe40_nRECOPI = fields.Char(
         string="Número do RECOPI"
@@ -3272,12 +3284,14 @@ class Imposto(models.AbstractModel):
     )
     nfe40_ICMS = fields.Many2one(
         string="Dados do ICMS Normal e ST",
-        comodel_name="nfe.40.icms"
+        comodel_name="nfe.40.icms",
+        xsd_required=True,
     )
     nfe40_IPI = fields.Many2one(
         xsd_type="TIpi",
         string="IPI",
-        comodel_name="nfe.40.tipi"
+        comodel_name="nfe.40.tipi",
+        xsd_required=True,
     )
     nfe40_II = fields.Many2one(
         string="Dados do Imposto de Importação",
@@ -3329,7 +3343,8 @@ class Pis(models.AbstractModel):
             "(Cumulativo/Não Cumulativo);\n02 - Operação Tributável - Base de "
             "Calculo = Valor da Operação (Alíquota Diferenciada);"
         ),
-        comodel_name="nfe.40.pisaliq"
+        comodel_name="nfe.40.pisaliq",
+        xsd_required=True,
     )
     nfe40_PISQtde = fields.Many2one(
         string="Código de Situação Tributária do PIS (PISQtde)",
@@ -3338,7 +3353,8 @@ class Pis(models.AbstractModel):
             " Base de Calculo = Quantidade Vendida x Alíquota por Unidade de "
             "Produto;"
         ),
-        comodel_name="nfe.40.pisqtde"
+        comodel_name="nfe.40.pisqtde",
+        xsd_required=True,
     )
     nfe40_PISNT = fields.Many2one(
         string="Código de Situação Tributária do PIS (PISNT)",
@@ -3349,14 +3365,16 @@ class Pis(models.AbstractModel):
             "contribuição;\n08 - Operação Sem Incidência da contribuição;\n09 "
             "- Operação com suspensão da contribuição;"
         ),
-        comodel_name="nfe.40.pisnt"
+        comodel_name="nfe.40.pisnt",
+        xsd_required=True,
     )
     nfe40_PISOutr = fields.Many2one(
         string="Código de Situação Tributária do PIS (PISOutr)",
         help=(
             "Código de Situação Tributária do PIS.\n99 - Outras Operações."
         ),
-        comodel_name="nfe.40.pisoutr"
+        comodel_name="nfe.40.pisoutr",
+        xsd_required=True,
     )
 
 
@@ -3570,7 +3588,8 @@ class Cofins(models.AbstractModel):
             "(Cumulativo/Não Cumulativo);\n02 - Operação Tributável - Base de "
             "Calculo = Valor da Operação (Alíquota Diferenciada);"
         ),
-        comodel_name="nfe.40.cofinsaliq"
+        comodel_name="nfe.40.cofinsaliq",
+        xsd_required=True,
     )
     nfe40_COFINSQtde = fields.Many2one(
         string="Código de Situação Tributária do COFINS (COFINSQtde)",
@@ -3579,7 +3598,8 @@ class Cofins(models.AbstractModel):
             "Tributável - Base de Calculo = Quantidade Vendida x Alíquota por "
             "Unidade de Produto;"
         ),
-        comodel_name="nfe.40.cofinsqtde"
+        comodel_name="nfe.40.cofinsqtde",
+        xsd_required=True,
     )
     nfe40_COFINSNT = fields.Many2one(
         string="Código de Situação Tributária do COFINS (COFINSNT)",
@@ -3590,7 +3610,8 @@ class Cofins(models.AbstractModel):
             "contribuição;\n08 - Operação Sem Incidência da contribuição;\n09 "
             "- Operação com suspensão da contribuição;"
         ),
-        comodel_name="nfe.40.cofinsnt"
+        comodel_name="nfe.40.cofinsnt",
+        xsd_required=True,
     )
     nfe40_COFINSOutr = fields.Many2one(
         string="Código de Situação Tributária do COFINS (COFINSOutr)",
@@ -3629,7 +3650,8 @@ class Cofins(models.AbstractModel):
             "Operação de Aquisição por Substituição Tributária\n98 - Outras "
             "Operações de Entrada\n99 - Outras Operações."
         ),
-        comodel_name="nfe.40.cofinsoutr"
+        comodel_name="nfe.40.cofinsoutr",
+        xsd_required=True,
     )
 
 
@@ -3955,6 +3977,7 @@ class Icms(models.AbstractModel):
     
     nfe40_ICMSPart = fields.Many2one(
         string="ICMSPart",
+        xsd_required=True,
         help=(
             "Partilha do ICMS entre a UF de origem e UF de destino ou a UF "
             "definida na legislação\nOperação interestadual para consumidor "
@@ -3972,7 +3995,8 @@ class Icms(models.AbstractModel):
             "antecipada de ICMS por ST na UF do remetente. Repasse via "
             "Substituto Tributário."
         ),
-        comodel_name="nfe.40.icmsst"
+        comodel_name="nfe.40.icmsst",
+        xsd_required=True,
     )
 
 
@@ -4353,7 +4377,7 @@ class ImpostoDevol(models.AbstractModel):
     nfe40_IPI = fields.Many2one(
         xsd_required=True,
         string="Informação de IPI devolvido",
-        comodel_name="nfe.40.ipi"
+        comodel_name="nfe.40.tipi"  # "nfe.40.ipi" with generateDS
     )
 
 
