@@ -26,24 +26,7 @@ class SpecMixin(models.AbstractModel):
             and self[xsd_field] is not False
         ):
             return misc.punctuation_rm(self[xsd_field])
-        elif (
-            hasattr(class_obj._fields[xsd_field], "xsd_type")
-            and "foneType" in class_obj._fields[xsd_field].xsd_type
-            and self[xsd_field] is not False
-        ):
-            return (
-                self[xsd_field]
-                .replace("(", "")
-                .replace(")", "")
-                .replace(" ", "")
-                .replace("-", "")
-                .replace("+", "")
-            )
-        elif (
-            hasattr(class_obj._fields[xsd_field], "xsd_type")
-            and "CEPType" in class_obj._fields[xsd_field].xsd_type
-            and self[xsd_field] is not False
-        ):
-            return self[xsd_field].replace("-", "")
+        elif xsd_field == "nfe40_fone" or xsd_field == "nfe40_CEP":
+            return misc.punctuation_rm(self[xsd_field]).replace(" ", "")
         else:
             return super()._export_field(xsd_field, class_obj, member_spec)
