@@ -1021,7 +1021,7 @@ class TinfRespTec(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TinfRespTec"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpjOpc",
         xsd_required=True,
@@ -1073,7 +1073,7 @@ class TconsReciNfe(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TconsReciNfe"
 
-    
+
     nfe40_tpAmb = fields.Selection(TAMB,
         xsd_type="TAmb",
         xsd_required=True,
@@ -1100,7 +1100,7 @@ class TenderEmi(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TenderEmi"
 
-    
+
     nfe40_xLgr = fields.Char(
         xsd_required=True,
         string="Logradouro"
@@ -1153,7 +1153,7 @@ class Tendereco(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tendereco"
 
-    
+
     nfe40_xLgr = fields.Char(
         xsd_required=True,
         string="Logradouro"
@@ -1263,7 +1263,7 @@ class Ipitrib(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tipi.Ipitrib"
 
-    
+
     nfe40_CST = fields.Selection(IPITRIB_CST,
         xsd_required=True,
         string="Código da Situação Tributária do IPI",
@@ -1317,7 +1317,7 @@ class Ipint(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tipi.Ipint"
 
-    
+
     nfe40_CST = fields.Selection(IPINT_CST,
         xsd_required=True,
         string="Código da Situação Tributária do IPI",
@@ -1339,7 +1339,7 @@ class Tlocal(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tlocal"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpjOpc",
         string="CNPJ"
@@ -1420,7 +1420,7 @@ class TretConsReciNfe(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TretConsReciNfe"
 
-    
+
     nfe40_tpAmb = fields.Selection(TAMB,
         xsd_type="TAmb",
         xsd_required=True,
@@ -1495,7 +1495,7 @@ class TretEnviNfe(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TretEnviNfe"
 
-    
+
     nfe40_tpAmb = fields.Selection(TAMB,
         xsd_type="TAmb",
         xsd_required=True,
@@ -1558,7 +1558,7 @@ class InfRec(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TretEnviNfe.InfRec"
 
-    
+
     nfe40_nRec = fields.Char(
         xsd_type="TRec",
         xsd_required=True,
@@ -1630,7 +1630,7 @@ class InfNfe(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe"
 
-    
+
     nfe40_ide = fields.Many2one(
         xsd_required=True,
         string="identificação da NF-e",
@@ -1745,7 +1745,7 @@ class Ide(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Ide"
 
-    
+
     nfe40_cUF = fields.Selection(TCODUFIBGE,
         xsd_type="TCodUfIBGE",
         xsd_required=True,
@@ -1985,7 +1985,7 @@ class RefNf(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Ide.Nfref.RefNf"
 
-    
+
     nfe40_cUF = fields.Selection(TCODUFIBGE,
         xsd_type="TCodUfIBGE",
         xsd_required=True,
@@ -2031,7 +2031,7 @@ class RefNfp(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Ide.Nfref.RefNfp"
 
-    
+
     nfe40_cUF = fields.Selection(TCODUFIBGE,
         xsd_type="TCodUfIBGE",
         xsd_required=True,
@@ -2086,7 +2086,7 @@ class RefEcf(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Ide.Nfref.RefEcf"
 
-    
+
     nfe40_mod = fields.Selection(REFECF_MOD,
         xsd_required=True,
         string="Código do modelo do Documento Fiscal",
@@ -2121,7 +2121,7 @@ class Emit(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Emit"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpj",
         string="Número do CNPJ do emitente"
@@ -2175,7 +2175,7 @@ class Avulsa(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Avulsa"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpj",
         xsd_required=True,
@@ -2230,7 +2230,7 @@ class Dest(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Dest"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpj",
         string="Número do CNPJ"
@@ -2358,7 +2358,7 @@ class Prod(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod"
 
-    
+
     nfe40_cProd = fields.Char(
         xsd_required=True,
         string="Código do produto ou serviço",
@@ -2587,7 +2587,8 @@ class Prod(models.AbstractModel):
             "farmacêuticas"
         ),
         comodel_name="nfe.40.med",
-        xsd_required=True,
+        # obrigatório apenas para produtos que são medicamentos.
+        # xsd_required=True,
     )
     nfe40_arma = fields.One2many("nfe.40.arma", "nfe40_arma_prod_id",
         string="Armamentos"
@@ -2752,7 +2753,7 @@ class ExportInd(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.DetExport.ExportInd"
 
-    
+
     nfe40_nRE = fields.Char(
         xsd_required=True,
         string="Registro de exportação"
@@ -2824,7 +2825,7 @@ class InfProdNff(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.InfProdNff"
 
-    
+
     nfe40_cProdFisco = fields.Char(
         xsd_required=True,
         string="Código Fiscal do Produto"
@@ -2842,7 +2843,7 @@ class InfProdEmb(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.InfProdEmb"
 
-    
+
     nfe40_xEmb = fields.Char(
         xsd_required=True,
         string="Embalagem do produto"
@@ -2868,7 +2869,7 @@ class VeicProd(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.VeicProd"
 
-    
+
     nfe40_tpOp = fields.Selection(VEICPROD_TPOP,
         xsd_required=True,
         string="Tipo da Operação",
@@ -3021,7 +3022,7 @@ class Med(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.Med"
 
-    
+
     nfe40_cProdANVISA = fields.Char(
         xsd_required=True,
         string="cProdANVISA",
@@ -3090,7 +3091,7 @@ class Comb(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.Comb"
 
-    
+
     nfe40_cProdANP = fields.Char(
         xsd_required=True,
         string="Código de produto da ANP",
@@ -3194,7 +3195,7 @@ class Cide(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.Comb.Cide"
 
-    
+
     nfe40_qBCProd = fields.Float(
         xsd_type="TDec_1204v",
         digits=(
@@ -3229,7 +3230,7 @@ class Encerrante(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Prod.Comb.Encerrante"
 
-    
+
     nfe40_nBico = fields.Char(
         xsd_required=True,
         string="Numero de identificação do Bico utilizado no abastecimento"
@@ -3273,7 +3274,7 @@ class Imposto(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto"
 
-    
+
     nfe40_vTotTrib = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -3334,7 +3335,7 @@ class Pis(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pis"
 
-    
+
     nfe40_PISAliq = fields.Many2one(
         string="Código de Situação Tributária do PIS",
         help=(
@@ -3384,7 +3385,7 @@ class Pisaliq(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pis.Pisaliq"
 
-    
+
     nfe40_CST = fields.Selection(PISALIQ_CST,
         xsd_required=True,
         string="Código de Situação Tributária do PIS",
@@ -3421,7 +3422,7 @@ class Pisqtde(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pis.Pisqtde"
 
-    
+
     nfe40_CST = fields.Selection(PISQTDE_CST,
         xsd_required=True,
         string="Código de Situação Tributária do PIS",
@@ -3465,7 +3466,7 @@ class Pisnt(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pis.Pisnt"
 
-    
+
     nfe40_CST = fields.Selection(PISNT_CST,
         xsd_required=True,
         string="Código de Situação Tributária do PIS",
@@ -3485,7 +3486,7 @@ class Pisoutr(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pis.Pisoutr"
 
-    
+
     nfe40_CST = fields.Selection(PISOUTR_CST,
         xsd_required=True,
         string="Código de Situação Tributária do PIS",
@@ -3534,7 +3535,7 @@ class Pisst(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Pisst"
 
-    
+
     nfe40_vBC = fields.Monetary(
         xsd_type="TDec_1302Opc",
         currency_field="brl_currency_id",
@@ -3579,7 +3580,7 @@ class Cofins(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofins"
 
-    
+
     nfe40_COFINSAliq = fields.Many2one(
         string="Código de Situação Tributária do COFINS",
         help=(
@@ -3661,7 +3662,7 @@ class Cofinsaliq(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofins.Cofinsaliq"
 
-    
+
     nfe40_CST = fields.Selection(COFINSALIQ_CST,
         xsd_required=True,
         string="Código de Situação Tributária do COFINS",
@@ -3698,7 +3699,7 @@ class Cofinsqtde(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofins.Cofinsqtde"
 
-    
+
     nfe40_CST = fields.Selection(COFINSQTDE_CST,
         xsd_required=True,
         string="Código de Situação Tributária do COFINS",
@@ -3741,7 +3742,7 @@ class Cofinsnt(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofins.Cofinsnt"
 
-    
+
     nfe40_CST = fields.Selection(COFINSNT_CST,
         xsd_required=True,
         string="Código de Situação Tributária do COFINS",
@@ -3762,7 +3763,7 @@ class Cofinsoutr(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofins.Cofinsoutr"
 
-    
+
     nfe40_CST = fields.Selection(COFINSOUTR_CST,
         xsd_required=True,
         string="Código de Situação Tributária do COFINS",
@@ -3843,7 +3844,7 @@ class Cofinsst(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Cofinsst"
 
-    
+
     nfe40_vBC = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -3887,7 +3888,7 @@ class Icmsufdest(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Icmsufdest"
 
-    
+
     nfe40_vBCUFDest = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -3974,7 +3975,7 @@ class Icms(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Icms"
 
-    
+
     nfe40_ICMSPart = fields.Many2one(
         string="ICMSPart",
         xsd_required=True,
@@ -4006,7 +4007,7 @@ class Icmspart(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Icms.Icmspart"
 
-    
+
     nfe40_orig = fields.Selection(TORIG,
         xsd_type="Torig",
         xsd_required=True,
@@ -4118,7 +4119,7 @@ class Icmsst(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Icms.Icmsst"
 
-    
+
     nfe40_orig = fields.Selection(TORIG,
         xsd_type="Torig",
         xsd_required=True,
@@ -4232,7 +4233,7 @@ class Ii(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Ii"
 
-    
+
     nfe40_vBC = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -4265,7 +4266,7 @@ class Issqn(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.Imposto.Issqn"
 
-    
+
     nfe40_vBC = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -4367,7 +4368,7 @@ class ImpostoDevol(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.ImpostoDevol"
 
-    
+
     nfe40_pDevol = fields.Monetary(
         xsd_type="TDec_0302Max100",
         currency_field="brl_currency_id",
@@ -4387,7 +4388,7 @@ class Ipi(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Det.ImpostoDevol.Ipi"
 
-    
+
     nfe40_vIPIDevol = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -4402,7 +4403,7 @@ class Total(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Total"
 
-    
+
     nfe40_ICMSTot = fields.Many2one(
         xsd_required=True,
         string="Totais referentes ao ICMS",
@@ -4424,7 +4425,7 @@ class Icmstot(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Total.Icmstot"
 
-    
+
     nfe40_vBC = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -4589,7 +4590,7 @@ class Issqntot(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Total.Issqntot"
 
-    
+
     nfe40_vServ = fields.Monetary(
         xsd_type="TDec_1302Opc",
         currency_field="brl_currency_id",
@@ -4661,7 +4662,7 @@ class RetTrib(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Total.RetTrib"
 
-    
+
     nfe40_vRetPIS = fields.Monetary(
         xsd_type="TDec_1302Opc",
         currency_field="brl_currency_id",
@@ -4705,7 +4706,7 @@ class Transp(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Transp"
 
-    
+
     nfe40_modFrete = fields.Selection(TRANSP_MODFRETE,
         xsd_required=True,
         string="Modalidade do frete",
@@ -4753,7 +4754,7 @@ class Transporta(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Transp.Transporta"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpj",
         string="CNPJ do transportador"
@@ -4787,7 +4788,7 @@ class RetTransp(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Transp.RetTransp"
 
-    
+
     nfe40_vServ = fields.Monetary(
         xsd_type="TDec_1302",
         currency_field="brl_currency_id",
@@ -4894,7 +4895,7 @@ class Cobr(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Cobr"
 
-    
+
     nfe40_fat = fields.Many2one(
         string="Dados da fatura",
         comodel_name="nfe.40.fat"
@@ -4910,7 +4911,7 @@ class Fat(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Cobr.Fat"
 
-    
+
     nfe40_nFat = fields.Char(
         string="Número da fatura"
     )
@@ -4964,7 +4965,7 @@ class Pag(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Pag"
 
-    
+
     nfe40_detPag = fields.One2many("nfe.40.detpag", "nfe40_detPag_pag_id",
         string="Grupo de detalhamento da forma de pagamento",
         help="Grupo de detalhamento da forma de pagamento."
@@ -5024,7 +5025,7 @@ class Card(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Pag.DetPag.Card"
 
-    
+
     nfe40_tpIntegra = fields.Selection(CARD_TPINTEGRA,
         xsd_required=True,
         string="tpIntegra",
@@ -5056,7 +5057,7 @@ class InfIntermed(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.InfIntermed"
 
-    
+
     nfe40_CNPJ = fields.Char(
         xsd_type="TCnpj",
         xsd_required=True,
@@ -5078,7 +5079,7 @@ class InfAdic(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.InfAdic"
 
-    
+
     nfe40_infAdFisco = fields.Char(
         string="Informações adicionais de interesse do Fisco",
         help="Informações adicionais de interesse do Fisco (v2.0)"
@@ -5180,7 +5181,7 @@ class Exporta(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Exporta"
 
-    
+
     nfe40_UFSaidaPais = fields.Selection(TUFEMI,
         xsd_type="TUfEmi",
         xsd_required=True,
@@ -5201,7 +5202,7 @@ class Compra(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Compra"
 
-    
+
     nfe40_xNEmp = fields.Char(
         string="Informação da Nota de Empenho de compras públicas",
         help=(
@@ -5222,7 +5223,7 @@ class Cana(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.Cana"
 
-    
+
     nfe40_safra = fields.Char(
         xsd_required=True,
         string="Identificação da safra"
@@ -5342,7 +5343,7 @@ class InfSolicNff(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfe.InfSolicNff"
 
-    
+
     nfe40_xSolic = fields.Char(
         xsd_required=True,
         string="Solicitação do pedido de emissão da NFF"
@@ -5355,7 +5356,7 @@ class InfNfeSupl(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "Tnfe.InfNfeSupl"
 
-    
+
     nfe40_qrCode = fields.Char(
         xsd_required=True,
         string="Texto com o QR",
@@ -5379,7 +5380,7 @@ class TenviNfe(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TenviNfe"
 
-    
+
     nfe40_idLote = fields.Char(
         xsd_type="TIdLote",
         xsd_required=True,
@@ -5408,7 +5409,7 @@ class TnfeProc(models.AbstractModel):
     _inherit = "spec.mixin.nfe"
     _binding_type = "TnfeProc"
 
-    
+
     nfe40_NFe = fields.Many2one(
         xsd_type="TNFe",
         xsd_required=True,
