@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="cnab_config_form_view_modelo_boleto_extend" model="ir.ui.view">
+        <field
+            name="name"
+        >Extensão da visão Configuração CNAB para adição do modelo do Boleto</field>
+        <field name="model">l10n_br_cnab.config</field>
+        <field name="priority">99</field>
+        <field
+            name="inherit_id"
+            ref="l10n_br_account_payment_order.l10n_br_cnab_config_form_view"
+        />
+        <field name="arch" type="xml">
+            <notebook name="l10n_br_account_payment_order" position="inside">
+                <page name="config_brcobranca" string="Configuração BRCobrança">
+                    <group name="main">
+                        <field name="brcobranca_modelo" />
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
