@@ -86,10 +86,19 @@ class AccountPaymentOrder(models.Model):
         string="Payment Method Code",
     )
 
+    account_payment_ways_ids = fields.Many2many(
+        comodel_name="account.payment.way",
+        compute="_compute_payment_ways",
+        string="Payment Ways",
+    )
+
+    def _compute_payment_ways(self):
+        self.account_payment_ways_ids = self.payment_line_ids.mapped("payment_way_id")
+
     @api.model
     def _prepare_bank_payment_line(self, paylines):
         result = super()._prepare_bank_payment_line(paylines)
-        # O CNAB não permite mesclar diversas payment.lines em uma
+        # O CNAB Cobrança não permite mesclar diversas payment.lines em uma
         # única bank_line por isso aqui deverá vir sempre uma linha
         result.update(
             {

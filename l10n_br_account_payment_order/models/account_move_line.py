@@ -113,6 +113,14 @@ class AccountMoveLine(models.Model):
         inverse_name="move_line_id",
     )
 
+    # TODO torna esse campo dinamico, para que o usuario possa
+    # mudar a forma de pagamento individual após emissao da fatura?
+    payment_way_id = fields.Many2one(
+        comodel_name="account.payment.way",
+        string="Payment Way",
+        related="move_id.invoice_payment_way_id",
+    )
+
     @api.depends("move_id")
     def _compute_journal_entry_ref(self):
         for record in self:
@@ -145,6 +153,7 @@ class AccountMoveLine(models.Model):
                     #  modulo account_payment_order na v14
                     "ml_maturity_date": self.date_maturity,
                     "move_id": self.move_id.id,
+                    "payment_way_id": self.payment_way_id.id,
                 }
             )
 

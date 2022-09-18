@@ -21,6 +21,7 @@
         # data
         "data/account_tax_group.xml",
         "data/account_tax_template.xml",
+        "data/account_payment_way.xml",
         # Views
         "views/account_tax_view.xml",
         "views/account_tax_template_view.xml",
@@ -40,6 +41,7 @@
         "views/l10n_br_account_menu.xml",
         # Report
         #        "report/account_invoice_report_view.xml",
+        "views/res_partner_view.xml",
     ],
     "demo": [
         "demo/res_users_demo.xml",

@@ -121,6 +121,11 @@ class AccountMove(models.Model):
             else:
                 inv.fiscal_operation_type = MOVE_TO_OPERATION[inv.move_type]
 
+    invoice_payment_way_id = fields.Many2one(
+        comodel_name="account.payment.way",
+        string="Payment Way",
+    )
+
     def _get_amount_lines(self):
         """Get object lines instaces used to compute fields"""
         return self.mapped("invoice_line_ids")

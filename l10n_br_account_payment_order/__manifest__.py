@@ -11,6 +11,7 @@
     "category": "Banking addons",
     "depends": [
         "l10n_br_base",
+        "l10n_br_account",  # TODO poc
         "account_payment_order",
         "l10n_br_account_due_list",
         "account_due_list_payment_mode",

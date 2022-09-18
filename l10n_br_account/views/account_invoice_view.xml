@@ -92,6 +92,7 @@
                     'readonly': [('state', '!=', 'draft')]
                 }"
                 />
+                <field name="invoice_payment_way_id" />
                 <field
                     name="fiscal_operation_id"
                     attrs="{'invisible': [('document_type_id', '=', False)], 'required': [('document_type_id', '!=', False)], 'readonly': [('state', '!=', 'draft')]}"

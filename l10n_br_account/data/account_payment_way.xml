@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo noupdate="1">
+
+    <!-- Account Payment Way -->
+    <record id="account_payment_way_pix_transfer" model="account.payment.way">
+        <field name="name">Transferência via Pix</field>
+        <field name="domain">pix_transfer</field>
+    </record>
+
+    <record id="account_payment_way_ted" model="account.payment.way">
+        <field name="name">Transferência via TED</field>
+        <field name="domain">ted</field>
+    </record>
+
+</odoo>

@@ -37,6 +37,9 @@
                     name="attrs"
                 >{'readonly': [('payment_method_code', 'in', ('400', '240', '500'))]}</attribute>
             </field>
+            <group name="payments" position="inside">
+                <field name="payment_way_id" />
+            </group>
             <group name="payments" position="after">
                 <group
                     string="Informações do CNAB"
