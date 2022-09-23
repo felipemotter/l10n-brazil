@@ -3,7 +3,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError
 
 from ..constants import (
     AVISO_FAVORECIDO,
@@ -205,6 +205,14 @@ class AccountPaymentLine(models.Model):
 
         return res
 
+    def draft2open_payment_line_check(self):
+        """
+        Override to add brazilian validations
+        """
+        res = super(AccountPaymentLine, self).draft2open_payment_line_check()
+        self._check_pix_transfer_type()
+        return res
+
     @api.onchange("partner_id")
     def partner_id_change(self):
         res = super(AccountPaymentLine, self).partner_id_change()
@@ -229,16 +237,15 @@ class AccountPaymentLine(models.Model):
     @api.constrains("cnab_payment_way_id", "partner_pix_id", "partner_bank_id")
     def _check_pix_transfer_type(self):
         for rec in self:
-            pay_domain = rec.payment_way_id.domain
             if (
-                pay_domain == "pix_transfer"
+                rec.payment_way_id.domain == "pix_transfer"
                 and not rec.partner_pix_id
                 and not rec.partner_bank_id.transactional_acc_type
             ):
-                raise ValidationError(
+                raise UserError(
                     _(
                         "When the payment method is pix transfer, a pix key must be "
                         "informed, or the bank account with the type of account.\n"
-                        f"Payment Reference: {rec.name}"
+                        f"Payment Line: {rec.name}"
                     )
                 )

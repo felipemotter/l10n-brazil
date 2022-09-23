@@ -154,6 +154,7 @@ class AccountMoveLine(models.Model):
                     "ml_maturity_date": self.date_maturity,
                     "move_id": self.move_id.id,
                     "payment_way_id": self.payment_way_id.id,
+                    "partner_pix_id": self.partner_id.pix_key_ids[0].id,
                 }
             )
 
