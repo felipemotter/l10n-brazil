@@ -21,6 +21,7 @@
         "security/cnab_cobranca_security.xml",
         "security/ir.model.access.csv",
         # Data
+        "data/account_payment_way.xml",
         "data/cnab_data.xml",
         "data/l10n_br_payment_export_type.xml",
         "data/boleto_data.xml",
