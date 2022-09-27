@@ -68,11 +68,6 @@
                 />
                 <field name="pix_transfer_type" readonly="1" />
             </field>
-            <field name="communication" position="after">
-                <field name="payment_way_id" />
-                <field name="service_type" />
-
-            </field>
             <xpath expr="//field[@name='currency_id']" position="after">
                 <!-- Os campos não podem ser alterados aqui porque isso precisa
                 ser feito na respectiva account.move.line para ficar registrado para
@@ -105,6 +100,8 @@
                         attrs="{'invisible': [('payment_type', '=', 'inbound')]}"
                     />
                     <field name="favored_warning" />
+                    <field name="payment_way_id" />
+                    <field name="service_type" />
                     <field name="payment_method_code" invisible="1" />
                 </group>
             </xpath>

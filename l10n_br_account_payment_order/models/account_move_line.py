@@ -6,7 +6,12 @@
 
 from odoo import api, fields, models
 
-from ..constants import BR_CODES_PAYMENT_ORDER, ESTADOS_CNAB, SITUACAO_PAGAMENTO
+from ..constants import (
+    BR_CODES_PAYMENT_ORDER,
+    ESTADOS_CNAB,
+    PAGAMENTO_FORNECEDOR,
+    SITUACAO_PAGAMENTO,
+)
 
 
 class AccountMoveLine(models.Model):
@@ -133,6 +138,10 @@ class AccountMoveLine(models.Model):
             else:
                 record.journal_entry_ref = "*" + str(record.move_id.id)
 
+    def _get_default_service_type(self):
+        if self.move_id.move_type == "in_invoice":
+            return PAGAMENTO_FORNECEDOR
+
     def _prepare_payment_line_vals(self, payment_order):
         vals = super()._prepare_payment_line_vals(payment_order)
         # Preenchendo apenas nos casos CNAB
@@ -155,6 +164,7 @@ class AccountMoveLine(models.Model):
                     "move_id": self.move_id.id,
                     "payment_way_id": self.payment_way_id.id,
                     "partner_pix_id": self.partner_id.pix_key_ids[0].id,
+                    "service_type": self._get_default_service_type(),
                 }
             )
 
