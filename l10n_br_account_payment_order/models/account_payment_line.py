@@ -234,7 +234,7 @@ class AccountPaymentLine(models.Model):
                 acc_type = line.partner_bank_id.transactional_acc_type
                 line.pix_transfer_type = acc_type
 
-    @api.constrains("cnab_payment_way_id", "partner_pix_id", "partner_bank_id")
+    @api.constrains("payment_way_id", "partner_pix_id", "partner_bank_id")
     def _check_pix_transfer_type(self):
         for rec in self:
             if (
