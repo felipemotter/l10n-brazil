@@ -212,6 +212,7 @@ class AccountPaymentLine(models.Model):
         """
         res = super(AccountPaymentLine, self).draft2open_payment_line_check()
         self._check_pix_transfer_type()
+        self._check_payment_way()
         return res
 
     @api.onchange("partner_id")
@@ -234,6 +235,24 @@ class AccountPaymentLine(models.Model):
             elif line.partner_bank_id:
                 acc_type = line.partner_bank_id.transactional_acc_type
                 line.pix_transfer_type = acc_type
+
+    def _check_payment_way(self):
+        for rec in self:
+            if rec.payment_type != "outbound":
+                return
+            if not rec.payment_way_id:
+                raise UserError(
+                    _(f"Payment Way is missing. \nPayment Line: {rec.name}")
+                )
+            if rec.payment_way_id not in rec.payment_mode_id.account_payment_way_ids:
+                raise UserError(
+                    _(
+                        "Payment Way not allowed for the specified payment mode."
+                        f"\nPayment Way: {rec.payment_way_id.name}"
+                        f"\nPayment Mode: {rec.payment_mode_id.name}"
+                        f"\nPayment Line: {rec.name}"
+                    )
+                )
 
     def _check_pix_transfer_type(self):
         for rec in self:
