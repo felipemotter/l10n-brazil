@@ -57,7 +57,8 @@
             </field>
             <field name="company_id" position="after">
                 <field
-                    name="indicative_form_payment"
+                    name="account_payment_ways_ids"
+                    widget="many2many_tags"
                     attrs="{'invisible': [('payment_type', '=', 'inbound')]}"
                 />
             </field>
