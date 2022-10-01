@@ -17,5 +17,3 @@
 "l10n_br_account_tax_user","Fiscal Tax for Account User","l10n_br_fiscal.model_l10n_br_fiscal_tax","account.group_account_invoice",1,0,0,0
 "l10n_br_account_operation_user","Fiscal Operation for Account User","l10n_br_fiscal.model_l10n_br_fiscal_operation","account.group_account_invoice",1,0,0,0
 "l10n_br_account_operation_line_user","Fiscal Operation Line for Account User","l10n_br_fiscal.model_l10n_br_fiscal_operation_line","account.group_account_invoice",1,0,0,0
-"l10n_br_account_payment_way_user","Payment Way for Account User","model_account_payment_way","account.group_account_invoice",1,0,0,0
-"l10n_br_account_payment_way_manager","Payment Way for Account Manager","model_account_payment_way","account.group_account_manager",1,1,1,1

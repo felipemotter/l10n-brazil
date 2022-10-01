@@ -15,6 +15,7 @@
                 <field name="auto_create_payment_order" />
             </field>
             <field name="payment_type" position="after">
+                <field name="account_payment_way_ids" widget="many2many_tags" />
                 <field
                     name="cnab_processor"
                     attrs="{'invisible': [('payment_method_code', 'not in', ('240', '400', '500'))], 'required': [('payment_method_code', 'in', ('240', '400', '500'))]}"

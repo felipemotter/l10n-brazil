@@ -11,7 +11,7 @@
     "category": "Banking addons",
     "depends": [
         "l10n_br_base",
-        "l10n_br_account",  # TODO poc
+        "l10n_br_account_base",
         "account_payment_order",
         "l10n_br_account_due_list",
         "account_due_list_payment_mode",
@@ -21,7 +21,6 @@
         "security/cnab_cobranca_security.xml",
         "security/ir.model.access.csv",
         # Data
-        "data/account_payment_way.xml",
         "data/cnab_data.xml",
         "data/l10n_br_payment_export_type.xml",
         "data/boleto_data.xml",
