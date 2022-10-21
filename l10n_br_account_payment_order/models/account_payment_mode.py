@@ -20,7 +20,7 @@ class AccountPaymentMode(models.Model):
         "mail.thread",
     ]
 
-    PAYMENT_WAY_DOMAIN = [
+    PAYMENT_MODE_DOMAIN = [
         ("dinheiro", _("Dinheiro")),
         ("cheque", _("Cheque")),
         ("pix_transfer", _("PIX Transfer")),
@@ -29,9 +29,8 @@ class AccountPaymentMode(models.Model):
         ("boleto", _("Boleto")),
     ]
 
-    payment_way_domain = fields.Selection(
-        selection=PAYMENT_WAY_DOMAIN,
-        string="Payment Way Domain",
+    payment_mode_domain = fields.Selection(
+        selection=PAYMENT_MODE_DOMAIN,
     )
 
     auto_create_payment_order = fields.Boolean(

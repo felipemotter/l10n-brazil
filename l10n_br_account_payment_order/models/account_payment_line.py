@@ -120,8 +120,8 @@ class AccountPaymentLine(models.Model):
         related="order_id.payment_mode_id",
     )
 
-    payment_way_domain = fields.Selection(
-        related="payment_mode_id.payment_way_domain",
+    payment_mode_domain = fields.Selection(
+        related="payment_mode_id.payment_mode_domain",
     )
 
     # Campo não usado no BRCobranca
@@ -225,7 +225,7 @@ class AccountPaymentLine(models.Model):
     def _compute_pix_transfer_type(self):
         for line in self:
             line.pix_transfer_type = False
-            if line.payment_way_domain != "pix_transfer":
+            if line.payment_mode_domain != "pix_transfer":
                 return
             if line.partner_pix_id:
                 line.pix_transfer_type = "pix_key"
@@ -236,7 +236,7 @@ class AccountPaymentLine(models.Model):
     def _check_pix_transfer_type(self):
         for rec in self:
             if (
-                rec.payment_way_domain == "pix_transfer"
+                rec.payment_mode_domain == "pix_transfer"
                 and not rec.partner_pix_id
                 and not rec.partner_bank_id.transactional_acc_type
             ):

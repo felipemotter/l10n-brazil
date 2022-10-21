@@ -43,8 +43,8 @@ class BankPaymentLine(models.Model):
             )
         if mode.favored_warning:
             res.update({"favored_warning": mode.favored_warning})
-        if mode.payment_way_domain:
-            res.update({"payment_way_domain": mode.payment_way_domain})
+        if mode.payment_mode_domain:
+            res.update({"payment_mode_domain": mode.payment_mode_domain})
         return res
 
     doc_finality_code = fields.Selection(
@@ -71,7 +71,7 @@ class BankPaymentLine(models.Model):
         related="payment_line_ids.pix_transfer_type",
     )
 
-    payment_way_domain = fields.Selection(
+    payment_mode_domain = fields.Selection(
         selection=[
             ("dinheiro", _("Dinheiro")),
             ("cheque", _("Cheque")),
@@ -80,7 +80,6 @@ class BankPaymentLine(models.Model):
             ("doc", _("DOC")),
             ("boleto", _("Boleto")),
         ],
-        string="Payment Way Domain",
     )
 
     service_type = fields.Selection(
