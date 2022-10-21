@@ -5,7 +5,7 @@
 
 import logging
 
-from odoo import api, fields, models
+from odoo import _, api, fields, models
 
 from ..constants import (
     AVISO_FAVORECIDO,
@@ -43,6 +43,8 @@ class BankPaymentLine(models.Model):
             )
         if mode.favored_warning:
             res.update({"favored_warning": mode.favored_warning})
+        if mode.payment_way_domain:
+            res.update({"payment_way_domain": mode.payment_way_domain})
         return res
 
     doc_finality_code = fields.Selection(
@@ -69,15 +71,16 @@ class BankPaymentLine(models.Model):
         related="payment_line_ids.pix_transfer_type",
     )
 
-    payment_way_id = fields.Many2one(
-        comodel_name="account.payment.way",
-        string="Payment Way",
-        related="payment_line_ids.payment_way_id",
-    )
-
     payment_way_domain = fields.Selection(
+        selection=[
+            ("dinheiro", _("Dinheiro")),
+            ("cheque", _("Cheque")),
+            ("pix_transfer", _("PIX Transfer")),
+            ("ted", _("TED")),
+            ("doc", _("DOC")),
+            ("boleto", _("Boleto")),
+        ],
         string="Payment Way Domain",
-        related="payment_way_id.domain",
     )
 
     service_type = fields.Selection(
@@ -178,7 +181,6 @@ class BankPaymentLine(models.Model):
     @api.model
     def same_fields_payment_line_and_bank_payment_line(self):
         res = super().same_fields_payment_line_and_bank_payment_line()
-        res.append("payment_way_id")
         res.append("partner_pix_id")
         res.append("service_type")
         return res

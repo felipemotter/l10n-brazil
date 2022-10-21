@@ -20,20 +20,18 @@ class AccountPaymentMode(models.Model):
         "mail.thread",
     ]
 
-    account_payment_way_ids = fields.Many2many(
-        comodel_name="account.payment.way",
-        string="Payment Ways",
-        help="Allowed payment ways",
-    )
+    PAYMENT_WAY_DOMAIN = [
+        ("dinheiro", _("Dinheiro")),
+        ("cheque", _("Cheque")),
+        ("pix_transfer", _("PIX Transfer")),
+        ("ted", _("TED")),
+        ("doc", _("DOC")),
+        ("boleto", _("Boleto")),
+    ]
 
-    default_payment_way_domain = fields.Selection(
-        selection=[
-            ("compatible", "Compatible with the Payment Mode"),
-            ("compatible_or_null", "Compatible or Empty"),
-            ("any", "Any"),
-        ],
-        string="Payment Way on Invoice",
-        default="compatible",
+    payment_way_domain = fields.Selection(
+        selection=PAYMENT_WAY_DOMAIN,
+        string="Payment Way Domain",
     )
 
     auto_create_payment_order = fields.Boolean(

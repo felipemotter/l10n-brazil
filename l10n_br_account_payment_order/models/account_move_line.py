@@ -156,7 +156,6 @@ class AccountMoveLine(models.Model):
                     #  modulo account_payment_order na v14
                     "ml_maturity_date": self.date_maturity,
                     "move_id": self.move_id.id,
-                    "payment_way_id": self.payment_way_id.id,
                     "partner_pix_id": partner_pix_id,
                     "service_type": self._get_default_service_type(),
                 }

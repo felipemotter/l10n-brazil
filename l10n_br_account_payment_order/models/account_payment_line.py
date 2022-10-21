@@ -63,11 +63,6 @@ class AccountPaymentLine(models.Model):
         help="Campo P011 do CNAB",
     )
 
-    payment_way_id = fields.Many2one(
-        comodel_name="account.payment.way",
-        string="Payment Way",
-    )
-
     partner_pix_id = fields.Many2one(
         string="Pix Key",
         comodel_name="res.partner.pix",
@@ -123,6 +118,10 @@ class AccountPaymentLine(models.Model):
     payment_mode_id = fields.Many2one(
         comodel_name="account.payment.mode",
         related="order_id.payment_mode_id",
+    )
+
+    payment_way_domain = fields.Selection(
+        related="payment_mode_id.payment_way_domain",
     )
 
     # Campo não usado no BRCobranca
@@ -211,27 +210,8 @@ class AccountPaymentLine(models.Model):
         Override to add brazilian validations
         """
         res = super(AccountPaymentLine, self).draft2open_payment_line_check()
-        self._check_payment_way()
         self._check_pix_transfer_type()
         return res
-
-    def _check_payment_way(self):
-        for rec in self:
-            if rec.payment_type != "outbound":
-                return
-            if not rec.payment_way_id:
-                raise UserError(
-                    _(f"Payment Way is missing. \nPayment Line: {rec.name}")
-                )
-            if rec.payment_way_id not in rec.payment_mode_id.account_payment_way_ids:
-                raise UserError(
-                    _(
-                        "Payment Way not allowed for the specified payment mode."
-                        f"\nPayment Way: {rec.payment_way_id.name}"
-                        f"\nPayment Mode: {rec.payment_mode_id.name}"
-                        f"\nPayment Line: {rec.name}"
-                    )
-                )
 
     @api.onchange("partner_id")
     def partner_id_change(self):
@@ -245,8 +225,7 @@ class AccountPaymentLine(models.Model):
     def _compute_pix_transfer_type(self):
         for line in self:
             line.pix_transfer_type = False
-            pay_domain = line.payment_way_id.domain
-            if pay_domain != "pix_transfer":
+            if line.payment_way_domain != "pix_transfer":
                 return
             if line.partner_pix_id:
                 line.pix_transfer_type = "pix_key"
@@ -257,7 +236,7 @@ class AccountPaymentLine(models.Model):
     def _check_pix_transfer_type(self):
         for rec in self:
             if (
-                rec.payment_way_id.domain == "pix_transfer"
+                rec.payment_way_domain == "pix_transfer"
                 and not rec.partner_pix_id
                 and not rec.partner_bank_id.transactional_acc_type
             ):
