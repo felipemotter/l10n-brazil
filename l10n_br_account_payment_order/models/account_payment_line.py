@@ -70,7 +70,6 @@ class AccountPaymentLine(models.Model):
 
     pix_transfer_type = fields.Selection(
         selection=PIX_TRANSFER_TYPES,
-        string="Pix transfer type",
         help="Pix transfer type identification",
         compute="_compute_pix_transfer_type",
     )
