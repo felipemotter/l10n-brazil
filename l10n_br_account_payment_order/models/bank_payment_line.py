@@ -5,7 +5,7 @@
 
 import logging
 
-from odoo import _, api, fields, models
+from odoo import api, fields, models
 
 from ..constants import (
     AVISO_FAVORECIDO,
@@ -43,8 +43,6 @@ class BankPaymentLine(models.Model):
             )
         if mode.favored_warning:
             res.update({"favored_warning": mode.favored_warning})
-        if mode.payment_mode_domain:
-            res.update({"payment_mode_domain": mode.payment_mode_domain})
         return res
 
     doc_finality_code = fields.Selection(
@@ -72,14 +70,7 @@ class BankPaymentLine(models.Model):
     )
 
     payment_mode_domain = fields.Selection(
-        selection=[
-            ("dinheiro", _("Dinheiro")),
-            ("cheque", _("Cheque")),
-            ("pix_transfer", _("PIX Transfer")),
-            ("ted", _("TED")),
-            ("doc", _("DOC")),
-            ("boleto", _("Boleto")),
-        ],
+        related="payment_line_ids.payment_mode_domain",
     )
 
     service_type = fields.Selection(
