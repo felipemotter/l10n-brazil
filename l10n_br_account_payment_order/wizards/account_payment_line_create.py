@@ -124,4 +124,5 @@ class AccountPaymentLineCreate(models.TransientModel):
         #         payline.move_line_id.id for payline in paylines
         #     ]
         #     domain += [('id', 'not in', move_lines_ids)]
+
         return domain

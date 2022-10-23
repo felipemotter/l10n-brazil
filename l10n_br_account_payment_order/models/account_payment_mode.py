@@ -20,6 +20,19 @@ class AccountPaymentMode(models.Model):
         "mail.thread",
     ]
 
+    PAYMENT_MODE_DOMAIN = [
+        ("dinheiro", _("Dinheiro")),
+        ("cheque", _("Cheque")),
+        ("pix_transfer", _("PIX Transfer")),
+        ("ted", _("TED")),
+        ("doc", _("DOC")),
+        ("boleto", _("Boleto")),
+    ]
+
+    payment_mode_domain = fields.Selection(
+        selection=PAYMENT_MODE_DOMAIN,
+    )
+
     auto_create_payment_order = fields.Boolean(
         string="Adicionar automaticamente ao validar a fatura",
         help="Cria a ordem de pagamento automaticamente ao confirmar a fatura",
