@@ -69,7 +69,14 @@ class AccountPaymentMode(models.Model):
         related="fixed_journal_id.company_id.own_number_type",
     )
 
-    cnab_processor = fields.Selection(selection=[("none", "None")], default="none")
+    cnab_processor = fields.Selection(
+        selection="_selection_cnab_processor",
+    )
+
+    @api.model
+    def _selection_cnab_processor(self):
+        # Method to be extended by modules that implement CNAB processors.
+        return []
 
     # Codigos de Retorno do Movimento
 
