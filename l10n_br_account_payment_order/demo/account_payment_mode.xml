@@ -972,7 +972,7 @@
         <field name="group_lines">True</field>
     </record>
     <!-- PIX Transferência -->
-    <record id="payment_mode_pix_trasfer" model="account.payment.mode">
+    <record id="payment_mode_pix_transfer" model="account.payment.mode">
         <field name="name">PIX Transferência</field>
         <field name="company_id" ref="base.main_company" />
         <field
