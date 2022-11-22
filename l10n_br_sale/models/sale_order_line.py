@@ -90,6 +90,8 @@ class SaleOrderLine(models.Model):
 
     ind_final = fields.Selection(related="order_id.ind_final")
 
+    user_discount_value = fields.Boolean(compute="_compute_user_discount_value")
+
     # Usado para tornar Somente Leitura os campos dos custos
     # de entrega quando a definição for por Total
     delivery_costs = fields.Selection(
@@ -195,10 +197,54 @@ class SaleOrderLine(models.Model):
                 )
         return result
 
+    def _compute_user_discount_value(self):
+        for rec in self:
+            if rec.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+                rec.user_discount_value = True
+            else:
+                rec.user_discount_value = False
+
+    @api.onchange("product_uom_qty", "price_unit")
+    def _onchange_discount_percent(self):
+        if self.env.user.has_group("l10n_br_sale.group_total_discount"):
+            if not self.discount_fixed or (
+                self.discount_fixed
+                and not self.env.user.has_group("l10n_br_sale.group_discount_per_value")
+            ):
+                self.discount_value = (self.product_uom_qty * self.price_unit) * (
+                    self.discount / 100
+                )
+        else:
+            if not self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+                self.discount_value = (self.product_uom_qty * self.price_unit) * (
+                    self.discount / 100
+                )
+
+    # @api.onchange("product_uom_qty", "price_unit")
+    # def _onchange_discount_percent(self):
+    #     if (
+    #         self.env.user.has_group("l10n_br_sale.group_total_discount")
+    #         and (
+    #             not self.discount_fixed
+    #             or (
+    #                 self.discount_fixed
+    #                 and not self.env.user.has_group(
+    #                     "l10n_br_sale.group_discount_per_value"
+    #                 )
+    #             )
+    #         )
+    #     ) or not self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+    #         self.discount_value = (self.product_uom_qty * self.price_unit) * (
+    #             self.discount / 100
+    #         )
+
     @api.onchange("discount")
     def _onchange_discount_percent(self):
         """Update discount value"""
-        if not self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+        if not (
+            not self.env.user.has_group("l10n_br_sale.group_total_discount")
+            and self.env.user.has_group("l10n_br_sale.group_discount_per_value")
+        ):
             self.discount_value = (self.product_uom_qty * self.price_unit) * (
                 self.discount / 100
             )

@@ -312,6 +312,7 @@
                 expr="//field[@name='order_line']/form//div[@name='discount']"
                 position="after"
             >
+                <field name="user_discount_value" />
                 <field
                     name="discount_fixed"
                     groups="l10n_br_sale.group_total_discount"

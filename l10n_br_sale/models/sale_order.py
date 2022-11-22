@@ -132,16 +132,17 @@ class SaleOrder(models.Model):
 
     @api.onchange("discount_rate")
     def onchange_discount_rate(self):
-        for order in self:
-            for line in order.order_line:
-                if line.discount_fixed:
-                    continue
-                if self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
-                    line.discount_value = (line.product_uom_qty * line.price_unit) * (
-                        order.discount_rate / 100
-                    )
-                    line._onchange_discount_value()
-                else:
+        if self.env.user.has_group("l10n_br_sale.group_total_discount"):
+            for order in self:
+                for line in order.order_line:
+                    if line.discount_fixed:
+                        continue
+                    # if self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+                    #     line.discount_value = (line.product_uom_qty * line.price_unit) * (
+                    #         order.discount_rate / 100
+                    #     )
+                    #     line._onchange_discount_value()
+                    # else:
                     line.discount = order.discount_rate
                     line._onchange_discount_percent()
 
