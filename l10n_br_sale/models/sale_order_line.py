@@ -220,21 +220,44 @@ class SaleOrderLine(models.Model):
                 )
         return result
 
-    @api.onchange("discount")
-    def _onchange_discount_percent(self):
-        """Update discount value"""
-        if not self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+    def need_change_discount_value(self):
+        return not self.user_discount_value or (
+            self.user_total_discount and not self.discount_fixed
+        )
+
+    def update_discount_value(self):
+        if self.need_change_discount_value():
             self.discount_value = (self.product_uom_qty * self.price_unit) * (
                 self.discount / 100
             )
 
-    @api.onchange("discount_value")
-    def _onchange_discount_value(self):
-        """Update discount percent"""
-        if self.env.user.has_group("l10n_br_sale.group_discount_per_value"):
+    def update_discount_percent(self):
+        if not self.need_change_discount_value():
             self.discount = (self.discount_value * 100) / (
                 self.product_uom_qty * self.price_unit or 1
             )
+
+    def match_general_discount(self):
+        if not self.discount_fixed and self.user_total_discount:
+            self.discount = self.order_id.discount_rate
+            self.update_discount_value()
+
+    @api.onchange("discount_fixed")
+    def _onchange_discount_fixed(self):
+        self.match_general_discount()
+
+    @api.onchange("product_uom_qty", "price_unit")
+    def _onchange_qt_or_price(self):
+        self.update_discount_value()
+        self.update_discount_percent()
+
+    @api.onchange("discount")
+    def _onchange_discount_percent(self):
+        self.update_discount_value()
+
+    @api.onchange("discount_value")
+    def _onchange_discount_value(self):
+        self.update_discount_percent()
 
     @api.onchange("fiscal_tax_ids")
     def _onchange_fiscal_tax_ids(self):
