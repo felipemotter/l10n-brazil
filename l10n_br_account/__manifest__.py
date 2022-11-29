@@ -14,6 +14,7 @@
         "l10n_br_coa",
         "l10n_br_fiscal",
         "l10n_br_account_due_list",
+        "account_edi_ubl_cii",  # TODO temporary fix, experimental
     ],
     "data": [
         # security
