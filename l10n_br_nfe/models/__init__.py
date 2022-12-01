@@ -1,5 +1,6 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
+from . import leiaute_nfe_v4_00_patch
 from . import uom
 from . import res_country_state
 from . import res_partner

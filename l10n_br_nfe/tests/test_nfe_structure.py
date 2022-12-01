@@ -14,6 +14,8 @@ from ..models.document_related import NFeRelated
 
 
 class NFeStructure(SavepointCase):
+    maxDiff = None
+
     @classmethod
     def setUpClass(cls):
         super(NFeStructure, cls).setUpClass()
@@ -114,9 +116,9 @@ class NFeStructure(SavepointCase):
             "nfe40_ide",
             "nfe40_infAdic",
             "nfe40_pag",
-            "nfe40_refECF",
-            "nfe40_refNF",
-            "nfe40_refNFP",
+            #            "nfe40_refECF",
+            #            "nfe40_refNF",
+            #            "nfe40_refNFP",
             "nfe40_retTrib",
             "nfe40_total",
             "nfe40_transp",
