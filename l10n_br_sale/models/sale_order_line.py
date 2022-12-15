@@ -89,12 +89,12 @@ class SaleOrderLine(models.Model):
     discount_fixed = fields.Boolean(string="Fixed Discount?")
 
     discount = fields.Float(
-        compute="_compute_discount",
+        compute="_compute_discounts",
         store=True,
     )
 
     discount_value = fields.Monetary(
-        compute="_compute_discount_value",
+        compute="_compute_discounts",
         store=True,
     )
 
@@ -241,9 +241,10 @@ class SaleOrderLine(models.Model):
         "discount_fixed",
         "product_uom_qty",
         "price_unit",
+        "discount",
         "discount_value",
     )
-    def _compute_discount(self):
+    def _compute_discounts(self):
         for line in self:
             if not line.discount_fixed and line.user_total_discount:
                 line.discount = line.order_id.discount_rate
@@ -251,10 +252,6 @@ class SaleOrderLine(models.Model):
                 line.discount = (line.discount_value * 100) / (
                     line.product_uom_qty * line.price_unit or 1
                 )
-
-    @api.depends("product_uom_qty", "price_unit", "discount")
-    def _compute_discount_value(self):
-        for line in self:
             if line.need_change_discount_value():
                 line.discount_value = (line.product_uom_qty * line.price_unit) * (
                     line.discount / 100
