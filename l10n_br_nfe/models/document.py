@@ -761,7 +761,7 @@ class NFe(spec_models.StackedModel):
     def _document_export(self, pretty_print=True):
         result = super()._document_export()
 
-        def sing_nfe(nfe_data):
+        def sign_nfe(nfe_data):
             """
             Method for signing an Brazil electronic invoice (NF-e)
 
@@ -798,7 +798,7 @@ class NFe(spec_models.StackedModel):
             edoc_binding = record.serialize()[0]
             record._processador()
             xml_data = self._render_edoc(edoc_binding)
-            signed_xml_etree = sing_nfe(xml_data)
+            signed_xml_etree = sign_nfe(xml_data)
             self._valida_xml(signed_xml_etree)
             signed_xml_data = etree.tostring(
                 signed_xml_etree,
