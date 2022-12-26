@@ -109,7 +109,7 @@ class CNABField(models.Model):
         "'patment_type_code' return the batch payment type \n"
         "'qty_batches' returns the number of batches \n"
         "'qty_records' returns the number of records \n"
-        "'batch_detail_lines' returns a list of batch detail records."
+        "'batch_detail_lines' returns the list of batch detail records.\n"
         "'segment_code' returns the code of the segment defined in the header of the line.",
         readonly=True,
         states={"draft": [("readonly", False)]},
