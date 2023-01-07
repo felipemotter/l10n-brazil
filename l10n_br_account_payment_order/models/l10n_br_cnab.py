@@ -147,12 +147,12 @@ class L10nBrCnab(models.Model):
 
     def _lote_400(self, evento, lote_id):
 
-        bank_payment_line_id = self.env["bank.payment.line"].search(
+        payment_id = self.env["account.payment"].search(
             [("nosso_numero", "=", evento.nosso_numero)], limit=1
         )
 
         vals_evento = {
-            "bank_payment_line_id": bank_payment_line_id.id,
+            "payment_id": payment_id.id,
             "data_ocorrencia": datetime.strptime(
                 str(evento.data_ocorrencia).zfill(6), STR_EVENTO_FORMAT
             )
@@ -164,15 +164,13 @@ class L10nBrCnab(models.Model):
             if evento.data_credito
             else "",
             "identificacao_titulo_empresa": evento.identificacao_titulo_empresa,
-            "invoice_id": bank_payment_line_id.payment_line_ids[
-                :1
-            ].move_line_id.invoice_id.id,
+            "invoice_id": payment_id.payment_line_ids[:1].move_line_id.invoice_id.id,
             "juros_mora_multa": float(evento.juros_mora_multa) / 100,
             "lote_id": lote_id.id,
             "nosso_numero": str(evento.nosso_numero),
             "ocorrencias": CODIGO_OCORRENCIAS_CNAB200[evento.codigo_ocorrencia],
             "outros_creditos": float(evento.outros_creditos) / 100,
-            "partner_id": bank_payment_line_id.partner_id.id,
+            "partner_id": payment_id.partner_id.id,
             "seu_numero": evento.numero_documento,
             "str_motiv_a": COD_REGISTROS_REJEITADOS_CNAB400.get(int(evento.erros[0:2]))
             if evento.erros[0:2]
@@ -199,7 +197,7 @@ class L10nBrCnab(models.Model):
         line_values = []
         invoices = []
         codigo_ocorrencia = evento.codigo_ocorrencia
-        if codigo_ocorrencia and bank_payment_line_id:
+        if codigo_ocorrencia and payment_id:
             cnab_state = False
             bank_state = False
             if codigo_ocorrencia in RETORNO_400_CONFIRMADA:
@@ -224,7 +222,7 @@ class L10nBrCnab(models.Model):
 
             if cnab_state:
 
-                for pay_order_line_id in bank_payment_line_id.payment_line_ids:
+                for pay_order_line_id in payment_id.payment_line_ids:
                     pay_order_line_id.move_line_id.cnab_state = cnab_state
                     pay_order_line_id.move_line_id.nosso_numero = str(
                         evento.nosso_numero
@@ -243,7 +241,7 @@ class L10nBrCnab(models.Model):
                             + float(evento.tarifa_cobranca),
                             "account_id": payment_mode.default_account_id.id
                             or invoice.account_id.id,
-                            "journal_id": bank_payment_line_id.order_id.journal_id.id,
+                            "journal_id": payment_id.payment_order_id.journal_id.id,
                             "date_maturity": datetime.strptime(
                                 str(evento.data_vencimento).zfill(6), STR_EVENTO_FORMAT
                             )
@@ -254,7 +252,7 @@ class L10nBrCnab(models.Model):
                             )
                             if evento.data_ocorrencia
                             else "",
-                            "partner_id": bank_payment_line_id.partner_id.id,
+                            "partner_id": payment_id.partner_id.id,
                         }
 
                         line_values.append((0, 0, line_dict))
@@ -320,7 +318,7 @@ class L10nBrCnab(models.Model):
         favorecido_partner = (
             favorecido_partner[0].partner_id.id if favorecido_partner else False
         )
-        bank_payment_line_id = self.env["bank.payment.line"].search(
+        payment_id = self.env["account.payment"].search(
             [("name", "=", evento.credito_seu_numero)]
         )
         ocorrencias_dic = dict(CODIGO_OCORRENCIAS)
@@ -347,10 +345,10 @@ class L10nBrCnab(models.Model):
             "str_motiv_d": ocorrencias_dic[ocorrencias[3]] if ocorrencias[3] else "",
             "str_motiv_e": ocorrencias_dic[ocorrencias[4]] if ocorrencias[4] else "",
             "lote_id": lote_id.id,
-            "bank_payment_line_id": bank_payment_line_id.id,
+            "payment_id": payment_id.id,
         }
         self.env["l10n_br.cnab.evento"].create(vals_evento)
-        if evento.ocorrencias and bank_payment_line_id:
+        if evento.ocorrencias and payment_id:
             if "00" in ocorrencias:
                 bank_state = "paid"
                 cnab_state = "accepted"
@@ -359,15 +357,15 @@ class L10nBrCnab(models.Model):
                 bank_state = "exception"
                 cnab_state = "not_accepted"
 
-            bank_payment_line_id.state2 = bank_state
-            for payment_line in bank_payment_line_id.payment_line_ids:
+            payment_id.state2 = bank_state
+            for payment_line in payment_id.payment_line_ids:
                 payment_line.move_line_id.cnab_state = cnab_state
 
     def _reprocessa_lote_240(self, evento, lote_id):
         raise NotImplementedError("FALTA FAZER")
 
     def _reprocessa_lote_400(self, evento, lote_id):
-        bank_payment_line_id = self.env["bank.payment.line"].search(
+        payment_id = self.env["account.payment"].search(
             [
                 (
                     "identificacao_titulo_empresa",
@@ -381,14 +379,13 @@ class L10nBrCnab(models.Model):
         cnab_event_id = self.env["l10n_br.cnab.evento"].search(
             [
                 ("lote_id", "=", lote_id.id),
-                ("bank_payment_line_id", "!=", False),
-                ("bank_payment_line_id", "=", bank_payment_line_id.id),
+                ("payment_id", "!=", False),
+                ("payment_id", "=", payment_id.id),
             ]
         )
 
         vals_evento = {
-            "bank_payment_line_id": cnab_event_id.bank_payment_line_id.id
-            or bank_payment_line_id.id,
+            "payment_id": cnab_event_id.payment_id.id or payment_id.id,
             "data_ocorrencia": datetime.strptime(
                 str(evento.data_ocorrencia).zfill(6), STR_EVENTO_FORMAT
             )
@@ -401,7 +398,7 @@ class L10nBrCnab(models.Model):
             else "",
             "identificacao_titulo_empresa": evento.identificacao_titulo_empresa,
             "invoice_id": cnab_event_id.invoice_id.id
-            or bank_payment_line_id.payment_line_ids[:1].move_line_id.invoice_id.id,
+            or payment_id.payment_line_ids[:1].move_line_id.invoice_id.id,
             "juros_mora_multa": cnab_event_id.juros_mora_multa
             or float(evento.juros_mora_multa) / 100,
             "lote_id": cnab_event_id.lote_id.id or lote_id.id,
@@ -409,7 +406,7 @@ class L10nBrCnab(models.Model):
             "ocorrencias": CODIGO_OCORRENCIAS_CNAB200[evento.codigo_ocorrencia],
             "outros_creditos": cnab_event_id.outros_creditos
             or float(evento.outros_creditos) / 100,
-            "partner_id": bank_payment_line_id.partner_id.id,
+            "partner_id": payment_id.partner_id.id,
             "seu_numero": evento.numero_documento,
             "str_motiv_a": COD_REGISTROS_REJEITADOS_CNAB400.get(int(evento.erros[0:2]))
             if evento.erros[0:2]
@@ -440,15 +437,15 @@ class L10nBrCnab(models.Model):
             cnab_event_id.write(vals_evento)
 
         codigo_ocorrencia = evento.codigo_ocorrencia
-        if codigo_ocorrencia and bank_payment_line_id:
+        if codigo_ocorrencia and payment_id:
 
             if not any(codigo_ocorrencia in x for x in RETORNOS_TRATADOS):
                 cnab_event_id.str_motiv_e = (
                     str(codigo_ocorrencia) + ": Ocorrência não tratada"
                 )
 
-            bank_payment_line_id.nosso_numero = str(evento.nosso_numero)
-            for pay_order_line_id in bank_payment_line_id.payment_line_ids:
+            payment_id.nosso_numero = str(evento.nosso_numero)
+            for pay_order_line_id in payment_id.payment_line_ids:
                 pay_order_line_id.move_line_id.nosso_numero = str(evento.nosso_numero)
                 pay_order_line_id.nosso_numero = str(evento.nosso_numero)
                 debit_move_line = pay_order_line_id.move_line_id

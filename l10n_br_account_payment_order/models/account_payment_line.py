@@ -250,3 +250,28 @@ class AccountPaymentLine(models.Model):
                         f"Payment Line: {rec.name}"
                     )
                 )
+
+    @api.model
+    def _get_payment_line_grouping_fields(self):
+        res = super()._get_payment_line_grouping_fields()
+        res.append("partner_pix_id")
+        res.append("service_type")
+        return res
+
+    def _prepare_account_payment_vals(self):
+        result = super()._prepare_account_payment_vals()
+        # O CNAB não permite mesclar diversas payment.lines em uma
+        # única bank_line por isso aqui deverá vir sempre uma linha
+        result.update(
+            {
+                "own_number": self.own_number,
+                "document_number": self.document_number,
+                "company_title_identification": self.company_title_identification,
+                "last_cnab_state": self.move_line_id.cnab_state,
+                "mov_instruction_code_id": self.mov_instruction_code_id.id,
+                "rebate_value": self.rebate_value,
+                "discount_value": self.discount_value,
+            }
+        )
+
+        return result

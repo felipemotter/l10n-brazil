@@ -25,7 +25,7 @@
                     class="alert alert-info"
                     role="alert"
                     style="margin-bottom:0px;"
-                    attrs="{'invisible': [('bank_line_error_ids','=',[])]}"
+                    attrs="{'invisible': [('payment_error_ids','=',[])]}"
                 >
                     <bold>
                         <a class="alert-link">
@@ -35,7 +35,7 @@
                     Verifique-os na aba "Problemas"
                 </div>
             </div>
-            <field name="bank_line_count" position="after">
+            <field name="payment_count" position="after">
                 <field name="payment_method_code" invisible="1" />
                 <field
                     name="code_convetion"
@@ -46,14 +46,14 @@
                     attrs="{'invisible': [('payment_type', '=', 'outbound')]}"
                 />
             </field>
-            <page name="bank-lines" position="after">
+            <page name="payment-lines" position="after">
                 <page
-                    name="bank-error-lines"
+                    name="payment-error-lines"
                     string="Problemas"
-                    attrs="{'invisible': [('bank_line_error_ids','=',[])]}"
+                    attrs="{'invisible': [('payment_error_ids','=',[])]}"
                 >
                     <field
-                        name="bank_line_error_ids"
+                        name="payment_error_ids"
                         context="{'default_payment_type': payment_type}"
                     >
                         <tree>

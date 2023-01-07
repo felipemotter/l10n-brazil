@@ -40,7 +40,8 @@
         "views/account_payment_line.xml",
         "views/account_payment_mode.xml",
         "views/res_company.xml",
-        "views/bank_payment_line.xml",
+        # TODO adaptar a view para os account.payment
+        # "views/bank_payment_line.xml",
         "views/l10n_br_cnab_return_log_view.xml",
         "views/account_move_line.xml",
         "views/l10n_br_cnab_return_move_code_view.xml",

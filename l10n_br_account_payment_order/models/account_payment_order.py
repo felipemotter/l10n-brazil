@@ -10,7 +10,7 @@
 
 import logging
 
-from odoo import _, api, fields, models
+from odoo import _, fields, models
 from odoo.exceptions import UserError
 
 from ..constants import (
@@ -69,9 +69,9 @@ class AccountPaymentOrder(models.Model):
         default="01",
     )
 
-    bank_line_error_ids = fields.One2many(
-        comodel_name="bank.payment.line",
-        inverse_name="order_id",
+    payment_error_ids = fields.One2many(
+        comodel_name="account.payment",
+        inverse_name="payment_order_id",
         string="Bank Payment Error Lines",
         readonly=True,
         domain=[("is_export_error", "=", True)],
@@ -86,34 +86,13 @@ class AccountPaymentOrder(models.Model):
         string="Payment Method Code",
     )
 
-    @api.model
-    def _prepare_bank_payment_line(self, paylines):
-        result = super()._prepare_bank_payment_line(paylines)
-        # O CNAB não permite mesclar diversas payment.lines em uma
-        # única bank_line por isso aqui deverá vir sempre uma linha
-        result.update(
-            {
-                "own_number": paylines[0].own_number,
-                "document_number": paylines[0].document_number,
-                "company_title_identification": paylines[
-                    0
-                ].company_title_identification,
-                "last_cnab_state": paylines[0].move_line_id.cnab_state,
-                "mov_instruction_code_id": paylines[0].mov_instruction_code_id.id,
-                "rebate_value": paylines[0].rebate_value,
-                "discount_value": paylines[0].discount_value,
-            }
-        )
-
-        return result
-
     def open2generated(self):
         result = super().open2generated()
 
         for record in self:
             # TODO - exemplos de caso de uso ? Qdo isso ocorre ?
             #  Já não gera erro ao tentar criar o arquivo ?
-            if record.bank_line_error_ids:
+            if record.payment_error_ids:
                 record.message_post(
                     body=_(
                         "Erro ao gerar o arquivo, "
