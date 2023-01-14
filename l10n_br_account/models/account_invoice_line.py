@@ -432,8 +432,9 @@ class AccountMoveLine(models.Model):
             price_unit, quantity, discount, currency, product, partner, taxes, move_type
         )
 
+        discount_value = self.env.context.get("discount_value") or 0
         # Compute 'price_subtotal'.
-        line_discount_price_unit = price_unit * (1 - (discount / 100.0))
+        line_discount_price_unit = price_unit - discount_value
 
         # Compute 'price_total'.
         if taxes:
