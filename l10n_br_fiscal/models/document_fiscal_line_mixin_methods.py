@@ -130,10 +130,13 @@ class FiscalDocumentLineMixinMethods(models.AbstractModel):
         "freight_value",
         "fiscal_quantity",
         "amount_tax_not_included",
+        "amount_tax_included",
         "uot_id",
         "product_id",
         "partner_id",
         "company_id",
+        "price_unit",
+        "quantity",
     )
     def _compute_amounts(self):
         for record in self:
