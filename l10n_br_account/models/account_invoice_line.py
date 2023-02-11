@@ -117,13 +117,13 @@ class AccountMoveLine(models.Model):
         ondelete="restrict",
     )
 
-    amount_currency = fields.Monetary(
-        compute="_compute_amount_debit_credit", store=True
-    )
+    # amount_currency = fields.Monetary(
+    #     compute="_compute_amount_debit_credit", store=True
+    # )
 
-    debit = fields.Monetary(compute="_compute_amount_debit_credit", store=True)
+    # debit = fields.Monetary(compute="_compute_amount_debit_credit", store=True)
 
-    credit = fields.Monetary(compute="_compute_amount_debit_credit", store=True)
+    # credit = fields.Monetary(compute="_compute_amount_debit_credit", store=True)
 
     @api.model
     def _shadowed_fields(self):
@@ -140,12 +140,15 @@ class AccountMoveLine(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
+
+        BUSINESS_FIELDS = ("price_unit", "quantity", "discount", "tax_ids")
+
         dummy_doc = self.env.company.fiscal_dummy_id
         dummy_line = fields.first(dummy_doc.fiscal_line_ids)
         for values in vals_list:
-            fiscal_doc_id = (
-                self.env["account.move"].browse(values["move_id"]).fiscal_document_id.id
-            )
+            move_id = self.env["account.move"].browse(values["move_id"])
+            fiscal_doc_id = move_id.fiscal_document_id.id
+
             if fiscal_doc_id == dummy_doc.id or values.get("exclude_from_invoice_tab"):
                 if len(dummy_line) < 1:
                     raise UserError(
@@ -156,17 +159,39 @@ class AccountMoveLine(models.Model):
                     )
                 values["fiscal_document_line_id"] = dummy_line.id
 
-            values.update(
-                self._update_fiscal_quantity(
-                    values.get("product_id"),
-                    values.get("price_unit"),
-                    values.get("quantity"),
-                    values.get("uom_id"),
-                    values.get("uot_id"),
-                )
-            )
-
+            if move_id.is_invoice(include_receipts=True):
+                if any(values.get(field) for field in BUSINESS_FIELDS) or any(
+                    values.get(field) for field in BUSINESS_FIELDS
+                ):
+                    values.update(
+                        self._get_amount_credit_debit_model(
+                            move_id,
+                            exclude_from_invoice_tab=values.get(
+                                "exclude_from_invoice_tab", False
+                            ),
+                            amount_untaxed=values.get("amount_untaxed", 0),
+                            amount_tax_included=values.get("amount_tax_included", 0),
+                            amount_taxed=values.get("amount_taxed", 0),
+                            currency_id=move_id.currency_id,
+                            company_id=move_id.company_id,
+                            date=move_id.date,
+                        )
+                    )
+                    print("Valores antes:")
+                    print(f"    Name: {values.get('name', '-')}")
+                    print(f"    amount_untaxed: {values.get('amount_untaxed', '-')}")
+                    print(
+                        f"    amount_tax_included: {values.get('amount_tax_included', '-')}"
+                    )
+                    print(f"    amount_taxed: {values.get('amount_taxed', '-')}")
+                    print(f"    amount_currency: {values.get('amount_currency', '-')}")
+                    print(f"    debit: {values.get('debit', '-')}")
+                    print(f"    credit: {values.get('credit', '-')}")
         lines = super().create(vals_list)
+
+        # for line in lines:
+        #     line.move_id._move_autocomplete_invoice_lines_values()
+
         for line in lines.filtered(lambda l: l.fiscal_document_line_id != dummy_line):
             shadowed_fiscal_vals = line._prepare_shadowed_fields_dict()
             doc_id = line.move_id.fiscal_document_id.id
@@ -414,7 +439,51 @@ class AccountMoveLine(models.Model):
     )
     # amount_tax_included = fields.Monetary()
 
-    @api.depends(
+    # @api.depends(
+    #     "move_id",
+    #     "move_id.move_type",
+    #     "move_id.fiscal_operation_id",
+    #     "move_id.fiscal_operation_id.deductible_taxes",
+    #     "amount_untaxed",
+    #     "amount_tax_included",
+    #     "amount_taxed",
+    #     "currency_id",
+    #     "company_currency_id",
+    #     "company_id",
+    #     "date",
+    # )
+    # def _compute_amount_debit_credit(self):
+    #     for record in self:
+    #         if record.exclude_from_invoice_tab:
+    #             continue
+    #         if record.move_id.move_type in record.move_id.get_outbound_types():
+    #             sign = 1
+    #         elif record.move_id.move_type in record.move_id.get_inbound_types():
+    #             sign = -1
+    #         else:
+    #             sign = 1
+
+    #         if record.move_id.fiscal_operation_id.deductible_taxes:
+    #             amount_currency = record.amount_taxed
+    #         else:
+    #             amount_currency = record.amount_untaxed - record.amount_tax_included
+
+    #         amount_currency = amount_currency * sign
+
+    #         balance = record.currency_id._convert(
+    #             amount_currency,
+    #             record.company_currency_id,
+    #             record.company_id,
+    #             record.date or fields.Date.context_today(record),
+    #         )
+
+    #         record.amount_currency = amount_currency
+    #         record.debit = balance > 0.0 and balance or 0.0
+    #         record.credit = balance < 0.0 and -balance or 0.0
+
+    #         record.move_id._recompute_dynamic_lines(recompute_all_taxes=True)
+
+    @api.onchange(
         "move_id",
         "move_id.move_type",
         "move_id.fiscal_operation_id",
@@ -427,31 +496,80 @@ class AccountMoveLine(models.Model):
         "company_id",
         "date",
     )
-    def _compute_amount_debit_credit(self):
-        for record in self:
-            if record.exclude_from_invoice_tab:
+    def _onchange_price_subtotal(self):
+        for line in self:
+            if not line.move_id.is_invoice(include_receipts=True):
                 continue
-            if record.move_id.move_type in record.move_id.get_outbound_types():
-                sign = 1
-            elif record.move_id.move_type in record.move_id.get_inbound_types():
-                sign = -1
-            else:
-                sign = 1
+            line.update(line._get_amount_credit_debit())
 
-            if record.move_id.fiscal_operation_id.deductible_taxes:
-                amount_currency = record.amount_taxed
-            else:
-                amount_currency = record.amount_untaxed - record.amount_tax_included
+    def _get_amount_credit_debit(
+        self,
+        move_id=None,
+        exclude_from_invoice_tab=None,
+        amount_untaxed=None,
+        amount_tax_included=None,
+        amount_taxed=None,
+        currency_id=None,
+        company_id=None,
+        date=None,
+    ):
+        self.ensure_one()
+        return self._get_amount_credit_debit_model(
+            move_id=self.move_id if move_id is None else move_id,
+            exclude_from_invoice_tab=self.exclude_from_invoice_tab
+            if exclude_from_invoice_tab is None
+            else exclude_from_invoice_tab,
+            amount_untaxed=self.amount_untaxed
+            if amount_untaxed is None
+            else amount_untaxed,
+            amount_tax_included=self.amount_tax_included
+            if amount_tax_included is None
+            else amount_tax_included,
+            amount_taxed=self.amount_taxed if amount_taxed is None else amount_taxed,
+            currency_id=self.currency_id if currency_id is None else currency_id,
+            company_id=self.company_id if company_id is None else company_id,
+            date=(self.date or fields.Date.context_today(self))
+            if date is None
+            else date,
+        )
 
-            amount_currency = amount_currency * sign
+    @api.model
+    def _get_amount_credit_debit_model(
+        self,
+        move_id,
+        exclude_from_invoice_tab,
+        amount_untaxed,
+        amount_tax_included,
+        amount_taxed,
+        currency_id,
+        company_id,
+        date,
+    ):
 
-            balance = record.currency_id._convert(
-                amount_currency,
-                record.company_currency_id,
-                record.company_id,
-                record.date or fields.Date.context_today(record),
-            )
+        if exclude_from_invoice_tab:
+            return {}
+        if move_id.move_type in move_id.get_outbound_types():
+            sign = 1
+        elif move_id.move_type in move_id.get_inbound_types():
+            sign = -1
+        else:
+            sign = 1
 
-            record.amount_currency = amount_currency
-            record.debit = balance > 0.0 and balance or 0.0
-            record.credit = balance < 0.0 and -balance or 0.0
+        if move_id.fiscal_operation_id.deductible_taxes:
+            amount_currency = amount_taxed
+        else:
+            amount_currency = amount_untaxed - amount_tax_included
+
+        amount_currency = amount_currency * sign
+
+        balance = currency_id._convert(
+            amount_currency,
+            company_id.currency_id,
+            company_id,
+            date,  # or fields.Date.context_today(record)
+        )
+        return {
+            "amount_currency": amount_currency,
+            "debit": balance > 0.0 and balance or 0.0,
+            "credit": balance < 0.0 and -balance or 0.0,
+        }
