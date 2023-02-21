@@ -124,6 +124,12 @@ class AccountMoveLine(models.Model):
         inverse_name="move_line_id",
     )
 
+    cnab_ignore_integration = fields.Boolean(
+        string="Ignorar integração CNAB",
+        default=False,
+        help="Se marcado, a linha de cobrança não será integrada com o CNAB",
+    )
+
     @api.depends("move_id")
     def _compute_journal_entry_ref(self):
         for record in self:
@@ -287,6 +293,7 @@ class AccountMoveLine(models.Model):
             if (
                 record.payment_mode_id.payment_method_code in BR_CODES_PAYMENT_ORDER
                 and record.payment_mode_id.payment_method_id.payment_type == "inbound"
+                and not record.cnab_ignore_integration
             ):
                 # Na importação do arquivo de retorno o metodo também é
                 # chamado no caso do modulo l10n_br_account_payment_brcobranca
