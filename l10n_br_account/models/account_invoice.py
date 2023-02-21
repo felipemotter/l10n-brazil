@@ -64,14 +64,6 @@ class AccountMove(models.Model):
     _inherits = {"l10n_br_fiscal.document": "fiscal_document_id"}
     _order = "date DESC, name DESC"
 
-    # some account.move records _inherits from an fiscal.document that is
-    # disabled with active=False (dummy record) in the l10n_br_fiscal_document table.
-    # To make the invoices still visible, we set active=True
-    # in the account_move table.
-    active = fields.Boolean(
-        default=True,
-    )
-
     cnpj_cpf = fields.Char(
         string="CNPJ/CPF",
         related="partner_id.cnpj_cpf",
@@ -546,16 +538,6 @@ class AccountMove(models.Model):
     def action_send_email(self):
         self.ensure_one()
         return self.fiscal_document_id.action_send_email()
-
-    @api.onchange("document_type_id")
-    def _onchange_document_type_id(self):
-        # We need to ensure that invoices without a fiscal document have the
-        # document_number blank, as all invoices without a fiscal document share this
-        # same field, they are linked to the same dummy fiscal document.
-        # Otherwise, in the tree view, this field will be displayed with the same value
-        # for all these invoices.
-        if not self.document_type_id:
-            self.document_number = ""
 
     def _reverse_moves(self, default_values_list=None, cancel=False):
         new_moves = super()._reverse_moves(
