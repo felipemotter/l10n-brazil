@@ -125,10 +125,8 @@ class AccountMoveLine(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
 
-        ACCOUNTING_FIELDS = ("debit", "credit", "amount_currency")
-        BUSINESS_FIELDS = ("price_unit", "quantity", "discount", "tax_ids")
         for values in vals_list:
-            move_id = self.env["account.move"].browse(values["move_id"])
+            self.env["account.move"].browse(values["move_id"])
             values.update(
                 self._update_fiscal_quantity(
                     values.get("product_id"),
@@ -139,31 +137,31 @@ class AccountMoveLine(models.Model):
                 )
             )
 
-            if (
-                move_id.is_invoice(include_receipts=True)
-                and move_id.company_id.country_id.code == "BR"
-                and any(
-                    values.get(field)
-                    for field in [*ACCOUNTING_FIELDS, *BUSINESS_FIELDS]
-                )
-            ):
-                move_line = self.env["account.move.line"].new(values.copy())
-                move_line._compute_amounts()
-                computed_values = move_line._convert_to_write(move_line._cache)
-                values.update(
-                    self._get_amount_credit_debit_model(
-                        move_id,
-                        exclude_from_invoice_tab=values.get(
-                            "exclude_from_invoice_tab", False
-                        ),
-                        amount_untaxed=computed_values.get("amount_untaxed", 0),
-                        amount_tax_included=values.get("amount_tax_included", 0),
-                        amount_taxed=computed_values.get("amount_taxed", 0),
-                        currency_id=move_id.currency_id,
-                        company_id=move_id.company_id,
-                        date=move_id.date,
-                    )
-                )
+            # if (
+            #     move_id.is_invoice(include_receipts=True)
+            #     and move_id.company_id.country_id.code == "BR"
+            #     and any(
+            #         values.get(field)
+            #         for field in [*ACCOUNTING_FIELDS, *BUSINESS_FIELDS]
+            #     )
+            # ):
+            #     move_line = self.env["account.move.line"].new(values.copy())
+            #     move_line._compute_amounts()
+            #     computed_values = move_line._convert_to_write(move_line._cache)
+            #     values.update(
+            #         self._get_amount_credit_debit_model(
+            #             move_id,
+            #             exclude_from_invoice_tab=values.get(
+            #                 "exclude_from_invoice_tab", False
+            #             ),
+            #             amount_untaxed=computed_values.get("amount_untaxed", 0),
+            #             amount_tax_included=values.get("amount_tax_included", 0),
+            #             amount_taxed=computed_values.get("amount_taxed", 0),
+            #             currency_id=move_id.currency_id,
+            #             company_id=move_id.company_id,
+            #             date=move_id.date,
+            #         )
+            #     )
 
         lines = super().create(vals_list)
         for line in lines.filtered(lambda l: not l.exclude_from_invoice_tab):
@@ -190,31 +188,31 @@ class AccountMoveLine(models.Model):
             shadowed_fiscal_vals["document_id"] = doc_id
             line.fiscal_document_line_id.write(shadowed_fiscal_vals)
 
-        ACCOUNTING_FIELDS = ("debit", "credit", "amount_currency")
-        BUSINESS_FIELDS = ("price_unit", "quantity", "discount", "tax_ids")
-        for line in self:
-            cleaned_vals = line.move_id._cleanup_write_orm_values(line, values)
-            if not cleaned_vals:
-                continue
+        # ACCOUNTING_FIELDS = ("debit", "credit", "amount_currency")
+        # BUSINESS_FIELDS = ("price_unit", "quantity", "discount", "tax_ids")
+        # for line in self:
+        #     cleaned_vals = line.move_id._cleanup_write_orm_values(line, values)
+        #     if not cleaned_vals:
+        #         continue
 
-            if not line.move_id.is_invoice(include_receipts=True):
-                continue
+        #     if not line.move_id.is_invoice(include_receipts=True):
+        #         continue
 
-            if any(
-                field in cleaned_vals
-                for field in [*ACCOUNTING_FIELDS, *BUSINESS_FIELDS]
-            ):
-                to_write = line._get_amount_credit_debit_model(
-                    line.move_id,
-                    exclude_from_invoice_tab=line.exclude_from_invoice_tab,
-                    amount_untaxed=line.amount_untaxed,
-                    amount_tax_included=line.amount_tax_included,
-                    amount_taxed=line.amount_taxed,
-                    currency_id=line.currency_id,
-                    company_id=line.company_id,
-                    date=line.date,
-                )
-                result |= super(AccountMoveLine, line).write(to_write)
+        #     if any(
+        #         field in cleaned_vals
+        #         for field in [*ACCOUNTING_FIELDS, *BUSINESS_FIELDS]
+        #     ):
+        #         to_write = line._get_amount_credit_debit_model(
+        #             line.move_id,
+        #             exclude_from_invoice_tab=line.exclude_from_invoice_tab,
+        #             amount_untaxed=line.amount_untaxed,
+        #             amount_tax_included=line.amount_tax_included,
+        #             amount_taxed=line.amount_taxed,
+        #             currency_id=line.currency_id,
+        #             company_id=line.company_id,
+        #             date=line.date,
+        #         )
+        #         result |= super(AccountMoveLine, line).write(to_write)
         return result
 
     def unlink(self):
