@@ -91,7 +91,7 @@ class NFeLine(spec_models.StackedModel):
 
     nfe40_cEAN = fields.Char(related="product_id.barcode")
 
-    # nfe40_xProd = fields.Char(related="name") TODO
+    nfe40_xProd = fields.Char(computed="_compute_nfe40_xProd")
 
     nfe40_NCM = fields.Char(related="ncm_id.code_unmasked")
 
@@ -172,9 +172,6 @@ class NFeLine(spec_models.StackedModel):
 
         nfe40_cProd = self.product_id.default_code or self.nfe40_cProd or ""
         export_dict["cProd"] = nfe40_cProd
-
-        nfe40_xProd = self.product_id.name or self.name or ""
-        export_dict["xProd"] = nfe40_xProd[:120].replace("\n", "").strip()
 
         nfe40_cEAN = nfe40_cEANTrib = self.product_id.barcode or "SEM GTIN"
         export_dict["cEAN"] = export_dict["cEANTrib"] = nfe40_cEAN
