@@ -8,8 +8,9 @@ from odoo import _, api, fields, models
 
 class PaymentInstrument(models.Model):
     """
-    This model is used to store payment instruments data, such as boleto and pix cobrança.
-    A payment instrument can be associated with more than one account payable or receivable entry.
+    This model is used to store payment instruments data, such as boleto and pix
+    cobrança. A payment instrument can be associated with more than one account
+    payable or receivable entry.
     """
 
     _name = "l10n_br.payment.instrument"
@@ -23,17 +24,23 @@ class PaymentInstrument(models.Model):
         related="company_id.currency_id", string="Company Currency"
     )
 
-    line_ids = fields.Many2many(
+    line_ids = fields.One2many(
         comodel_name="account.move.line",
-        relation="account_move_line_payment_instrument_rel",
-        column1="payment_instrument_id",
-        column2="account_move_line_id",
+        inverse_name="payment_instrument_id",
         string="Payable/Receivable Entries",
     )
 
+    # line_ids = fields.Many2many(
+    #     comodel_name="account.move.line",
+    #     relation="account_move_line_payment_instrument_rel",
+    #     column1="payment_instrument_id",
+    #     column2="account_move_line_id",
+    #     string="Payable/Receivable Entries",
+    # )
+
     instrument_type = fields.Selection(
         selection="_get_instrument_type",
-        requerid=True,
+        required=True,
     )
 
     # BOLETO BUSINESS FIELDS
