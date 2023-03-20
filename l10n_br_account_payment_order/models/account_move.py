@@ -79,8 +79,9 @@ class AccountMove(models.Model):
         #  isso deve ser melhor investigado
         self._compute_financial()
         for index, interval in enumerate(self.financial_move_line_ids):
-            inv_number = self.get_invoice_fiscal_number().split("/")[-1]
-            numero_documento = inv_number + "/" + str(index + 1).zfill(2)
+            numero_documento = self._compute_financial_line_name(
+                index, len(self.financial_move_line_ids)
+            )
 
             sequence = self.payment_mode_id.get_own_number_sequence(
                 self, numero_documento
