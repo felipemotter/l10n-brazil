@@ -375,6 +375,10 @@ class AccountMove(models.Model):
 
         return taxes_mapped
 
+    def _compute_financial_line_name(self, idx, terms_number):
+        inv_number = self.get_invoice_fiscal_number()
+        return f"{inv_number}/{idx+1}-{terms_number}"
+
     def _recompute_payment_terms_lines(self):
         """Compute the dynamic payment term lines of the journal entry.
         overwritten this method to change aml's field name.
@@ -385,19 +389,16 @@ class AccountMove(models.Model):
         # atualizar esse dado ao validar a fatura, ou atribuir o número da NFe
         # antes de salva-la.
         result = super()._recompute_payment_terms_lines()
-        if self.document_number:
-            terms_lines = self.line_ids.filtered(
-                lambda l: l.account_id.user_type_id.type in ("receivable", "payable")
-                and l.move_id.document_type_id
-            )
-            terms_lines.sorted(lambda line: line.date_maturity)
-            for idx, terms_line in enumerate(terms_lines):
-                # TODO TODO pegar o método do self.fiscal_document_id.with_context(
-                # fiscal_document_no_company=True
-                # )._compute_document_name()
-                terms_line.name = "{}/{}-{}".format(
-                    self.document_number, idx + 1, len(terms_lines)
-                )
+        terms_lines = self.line_ids.filtered(
+            lambda l: l.account_id.user_type_id.type in ("receivable", "payable")
+            and l.move_id.document_type_id
+        )
+        terms_lines.sorted(lambda line: line.date_maturity)
+        for idx, terms_line in enumerate(terms_lines):
+            # TODO TODO pegar o método do self.fiscal_document_id.with_context(
+            # fiscal_document_no_company=True
+            # )._compute_document_name()
+            terms_line.name = self._compute_financial_line_name(idx, len(terms_lines))
         return result
 
     # @api.model
