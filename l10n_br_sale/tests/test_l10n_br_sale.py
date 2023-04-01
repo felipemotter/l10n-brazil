@@ -157,6 +157,7 @@ class L10nBrSaleBaseTest(SavepointCase):
         sale_line._onchange_fiscal_operation_id()
         sale_line._onchange_fiscal_operation_line_id()
         sale_line._onchange_fiscal_taxes()
+        sale_line._onchange_fiscal_tax_ids()
 
     def _invoice_sale_order(self, sale_order):
         sale_order.action_confirm()
@@ -233,6 +234,7 @@ class L10nBrSaleBaseTest(SavepointCase):
             )
 
             for line in invoice.invoice_line_ids:
+                line._onchange_price_subtotal()
                 self.assertTrue(
                     line.fiscal_operation_line_id,
                     "Error to included Operation Line from Sale Order Line.",
