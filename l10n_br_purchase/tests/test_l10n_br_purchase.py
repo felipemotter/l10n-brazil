@@ -161,6 +161,7 @@ class L10nBrPurchaseBaseTest(SavepointCase):
         purchase_line._onchange_fiscal_operation_id()
         purchase_line._onchange_fiscal_operation_line_id()
         purchase_line._onchange_fiscal_taxes()
+        purchase_line._onchange_fiscal_tax_ids()
 
     def _invoice_purchase_order(self, order):
         order.with_context(tracking_disable=True).button_confirm()
@@ -280,6 +281,7 @@ class L10nBrPurchaseBaseTest(SavepointCase):
             )
 
             for line in invoice.invoice_line_ids:
+                line._onchange_price_subtotal()
                 self.assertTrue(
                     line.fiscal_operation_line_id,
                     "Error to included Operation " "Line from Purchase Order Line.",
