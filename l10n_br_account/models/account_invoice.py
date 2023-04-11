@@ -489,10 +489,6 @@ class AccountMove(models.Model):
             move.line_ids._compute_amounts()
             new_vals_list.append(move._move_autocomplete_invoice_lines_values())
 
-        for vals in new_vals_list:
-            if not vals.get("document_type_id"):
-                vals["fiscal_document_id"] = self.env.company.fiscal_dummy_id.id
-
         return new_vals_list
 
     # @api.model
