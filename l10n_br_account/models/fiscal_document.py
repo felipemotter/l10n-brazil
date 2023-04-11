@@ -16,26 +16,6 @@ class FiscalDocument(models.Model):
         string="Invoices",
     )
 
-    def modified(self, fnames, create=False, before=False):
-        """
-        Modifying a dummy fiscal document (no document_type_id) should not recompute
-        any account.move related to the same dummy fiscal document.
-        """
-        filtered = self.filtered(
-            lambda rec: isinstance(rec.id, models.NewId) or rec.document_type_id
-        )
-        return super(FiscalDocument, filtered).modified(fnames, create, before)
-
-    def _modified_triggers(self, tree, create=False):
-        """
-        Modifying a dummy fiscal document (no document_type_id) should not recompute
-        any account.move related to the same dummy fiscal document.
-        """
-        filtered = self.filtered(
-            lambda rec: isinstance(rec.id, models.NewId) or rec.document_type_id
-        )
-        return super(FiscalDocument, filtered)._modified_triggers(tree, create)
-
     fiscal_line_ids = fields.One2many(
         copy=False,
     )
