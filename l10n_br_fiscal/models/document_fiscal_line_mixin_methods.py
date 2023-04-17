@@ -366,7 +366,6 @@ class FiscalDocumentLineMixinMethods(models.AbstractModel):
         if self.product_id:
             self.name = self.product_id.display_name
             self.fiscal_type = self.product_id.fiscal_type
-            self.uom_id = self.product_id.uom_id
             self.ncm_id = self.product_id.ncm_id
             self.nbm_id = self.product_id.nbm_id
             self.tax_icms_or_issqn = self.product_id.tax_icms_or_issqn
@@ -375,7 +374,6 @@ class FiscalDocumentLineMixinMethods(models.AbstractModel):
             self.nbs_id = self.product_id.nbs_id
             self.fiscal_genre_id = self.product_id.fiscal_genre_id
             self.service_type_id = self.product_id.service_type_id
-            self.uot_id = self.product_id.uot_id or self.product_id.uom_id
             if self.product_id.city_taxation_code_id:
                 company_city_id = self.company_id.city_id
                 city_id = self.product_id.city_taxation_code_id.filtered(
@@ -784,23 +782,32 @@ class FiscalDocumentLineMixinMethods(models.AbstractModel):
         result = {"uot_id": uom_id, "fiscal_quantity": quantity, "fiscal_price": price}
         if uot_id and uom_id != uot_id:
             result["uot_id"] = uot_id
-            if product_id and price and quantity:
+            if product_id and price and quantity and uom_id:
                 product = self.env["product.product"].browse(product_id)
-                result["fiscal_price"] = price / (product.uot_factor or 1.0)
-                result["fiscal_quantity"] = quantity * (product.uot_factor or 1.0)
-
+                uom = self.env["uom.uom"].browse(uom_id)
+                price_default_uom = uom._compute_price(price, product.uom_id)
+                qt_default_uom = uom._compute_quantity(quantity, product.uom_id)
+                uot_factor = product.uot_factor if product.uot_id else False
+                result["fiscal_price"] = price_default_uom / (uot_factor or 1.0)
+                result["fiscal_quantity"] = qt_default_uom * (uot_factor or 1.0)
         return result
 
-    @api.onchange("uot_id", "uom_id", "price_unit", "quantity")
+    @api.onchange("uom_id", "price_unit", "quantity")
     def _onchange_commercial_quantity(self):
         product_id = False
         if self.product_id:
             product_id = self.product_id.id
+            self.uot_id = self.product_id.uot_id or self.uom_id
         self.update(
             self._update_fiscal_quantity(
-                product_id, self.price_unit, self.quantity, self.uom_id, self.uot_id
+                product_id,
+                self.price_unit,
+                self.quantity,
+                self.uom_id.id,
+                self.uot_id.id,
             )
         )
+        self._onchange_fiscal_tax_ids()
 
     @api.onchange("ncm_id", "nbs_id", "cest_id")
     def _onchange_ncm_id(self):
