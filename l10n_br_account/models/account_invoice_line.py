@@ -123,6 +123,12 @@ class AccountMoveLine(models.Model):
         store=True,
     )
 
+    uom_id = fields.Many2one(
+        string="Mixin UOM",
+        related="product_uom_id",
+        depends=["product_uom_id"],
+    )
+
     @api.depends(
         "quantity",
         "price_unit",
