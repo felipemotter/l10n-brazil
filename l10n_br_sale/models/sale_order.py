@@ -169,6 +169,8 @@ class SaleOrder(models.Model):
 
         inv_ids = super()._create_invoices(grouped=grouped, final=final, date=date)
 
+        if not self.company_id.document_type_id:
+            return inv_ids
         # In brazilian localization we need to overwrite this method
         # because when there are a sale order line with different Document
         # Fiscal Type the method should be create invoices separated.
