@@ -234,6 +234,7 @@ class Document(models.Model):
                             MODELO_FISCAL_NFSE,
                         ),
                     ),
+                    ("state", "!=", "cancelada"),
                 ]
             )
 
