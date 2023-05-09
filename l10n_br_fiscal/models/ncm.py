@@ -16,6 +16,8 @@ class Ncm(models.Model):
     ]
     _description = "NCM"
 
+    active = fields.Boolean(default=True)
+
     code = fields.Char(size=10)
 
     code_unmasked = fields.Char(size=8)
