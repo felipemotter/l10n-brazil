@@ -16,6 +16,10 @@ class FiscalDocument(models.Model):
         string="Invoices",
     )
 
+    fiscal_line_ids = fields.One2many(
+        copy=False,
+    )
+
     def unlink(self):
         non_draft_documents = self.filtered(
             lambda d: d.state != SITUACAO_EDOC_EM_DIGITACAO
