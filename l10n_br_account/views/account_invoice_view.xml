@@ -298,6 +298,7 @@
                 <field name="amount_currency" invisible="1" />
                 <field name="date" invisible="1" />
                 <field name="date_maturity" invisible="1" />
+                <field name="tax_framework" invisible="1" />
                 <field name="tax_line_id" invisible="1" />
                 <field name="tax_repartition_line_id" invisible="1" />
                 <field name="tax_tag_ids" invisible="1" />

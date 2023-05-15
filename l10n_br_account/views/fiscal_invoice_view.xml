@@ -86,6 +86,8 @@
                     context="{'form_view_ref': 'l10n_br_account.fiscal_invoice_line_form', 'default_document_id': fiscal_document_id, 'default_company_id': company_id, 'default_partner_id': partner_id, 'default_fiscal_operation_type': fiscal_operation_type, 'default_fiscal_operation_id': fiscal_operation_id, 'no_subcall': True}"
                 >
                 <tree>
+
+                  <field name="tax_framework" invisible="1" />
                   <field name="product_id" />
                   <field name="uom_id" />
                   <field name="price_unit" />
