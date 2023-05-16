@@ -205,7 +205,6 @@ class AccountMoveLine(models.Model):
                 raise UserError(
                     _("You cannot edit an invoice related to a withholding entry")
                 )
-
             cleaned_vals = line.move_id._cleanup_write_orm_values(line, values)
             if not cleaned_vals:
                 continue
@@ -229,10 +228,6 @@ class AccountMoveLine(models.Model):
                     cfop_id=line.cfop_id,
                 )
                 result |= super(AccountMoveLine, line).write(to_write)
-            shadowed_fiscal_vals = line._prepare_shadowed_fields_dict()
-            doc_id = line.move_id.fiscal_document_id.id
-            shadowed_fiscal_vals["document_id"] = doc_id
-            line.fiscal_document_line_id.write(shadowed_fiscal_vals)
         return result
 
     def unlink(self):
