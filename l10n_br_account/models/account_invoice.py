@@ -596,7 +596,19 @@ class AccountMove(models.Model):
                     force_fiscal_operation_id
                     or line.fiscal_operation_id.return_fiscal_operation_id
                 )
-                line._onchange_fiscal_operation_id()
+                mapping_result = line.fiscal_operation_line_id.map_fiscal_taxes(
+                    company=line.company_id,
+                    partner=line.partner_id,
+                    product=line.product_id,
+                    ncm=line.ncm_id,
+                    nbm=line.nbm_id,
+                    nbs=line.nbs_id,
+                    cest=line.cest_id,
+                    city_taxation_code=line.city_taxation_code_id,
+                    ind_final=line.ind_final,
+                )
+
+                line.cfop_id = mapping_result["cfop"]
 
             # Adds the related document to the NF-e.
             # this is required for correct xml validation
