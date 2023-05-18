@@ -3,6 +3,7 @@
 # License AGPL-3 - See http://www.gnu.org/licenses/agpl-3.0.html
 
 from ast import literal_eval
+from datetime import datetime
 
 from erpbrasil.base.fiscal.edoc import ChaveEdoc
 
@@ -253,6 +254,28 @@ class Document(models.Model):
                 )
             else:
                 ChaveEdoc(chave=record.document_key, validar=True)
+
+    @api.constrains("document_date", "document_key", "state_edoc")
+    def _check_document_date_key(self):
+        for rec in self:
+            if rec.document_key:
+                key_date_str = rec.document_key[2:6]
+                key_date = datetime.strptime(key_date_str, "%y%m")
+
+                document_date = fields.Datetime.from_string(rec.document_date)
+                if (
+                    rec.document_type in PRODUCT_CODE_FISCAL_DOCUMENT_TYPES
+                    and rec.state_edoc in ["a_enviar", "autorizada"]
+                    and (
+                        key_date.year != document_date.year
+                        or key_date.month != document_date.month
+                    )
+                ):
+                    raise ValidationError(
+                        _(
+                            "The document date does not match the date in the document key."
+                        )
+                    )
 
     @api.constrains("document_number")
     def _check_number(self):

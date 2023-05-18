@@ -4,6 +4,7 @@
 
 from psycopg2 import IntegrityError
 
+from odoo import exceptions
 from odoo.exceptions import UserError
 from odoo.tests import SavepointCase
 from odoo.tools import mute_logger
@@ -1205,3 +1206,12 @@ class TestFiscalDocumentGeneric(SavepointCase):
             SITUACAO_EDOC_CANCELADA,
             "Document is not in Canceled state",
         )
+
+    def test_document_date_key_check(self):
+        document = self.env.ref("l10n_br_fiscal.demo_nfe_so_simples_faturamento")
+        with self.assertRaises(exceptions.ValidationError):
+            document.write(
+                {
+                    "document_date": "2023-05-18 00:00:00",
+                }
+            )
