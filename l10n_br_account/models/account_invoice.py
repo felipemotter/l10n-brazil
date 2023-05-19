@@ -502,34 +502,12 @@ class AccountMove(models.Model):
             i.button_cancel()
             i.button_draft()
 
-    def action_post(self):
-        result = super().action_post()
+    def _post(self, soft=True):
+        result = super()._post(soft)
 
         self.mapped("fiscal_document_id").filtered(
             lambda d: d.document_type_id
         ).action_document_confirm()
-
-        # TODO FIXME
-        # Deixar a migração das funcionalidades do refund por último.
-        # Verificar se ainda haverá necessidade desse código.
-
-        # for record in self.filtered(lambda i: i.refund_move_id):
-        #     if record.state == "open":
-        #         # Ao confirmar uma fatura/documento fiscal se é uma devolução
-        #         # é feito conciliado com o documento de origem para abater
-        #         # o valor devolvido pelo documento de refund
-        #         to_reconcile_lines = self.env["account.move.line"]
-        #         for line in record.move_id.line_ids:
-        #             if line.account_id.id == record.account_id.id:
-        #                 to_reconcile_lines += line
-        #             if line.reconciled:
-        #                 line.remove_move_reconcile()
-        #         for line in record.refund_move_id.move_id.line_ids:
-        #             if line.account_id.id == record.refund_move_id.account_id.id:
-        #                 to_reconcile_lines += line
-
-        #         to_reconcile_lines.filtered(lambda l: l.reconciled).reconcile()
-
         return result
 
     def view_xml(self):
@@ -555,27 +533,34 @@ class AccountMove(models.Model):
             self.document_number = ""
 
     def _reverse_moves(self, default_values_list=None, cancel=False):
-        new_moves = super()._reverse_moves(
-            default_values_list=default_values_list, cancel=cancel
-        )
+
         force_fiscal_operation_id = False
         if self.env.context.get("force_fiscal_operation_id"):
             force_fiscal_operation_id = self.env["l10n_br_fiscal.operation"].browse(
                 self.env.context.get("force_fiscal_operation_id")
             )
-        for record in new_moves.filtered(lambda i: i.document_type_id):
-            if (
-                not force_fiscal_operation_id
-                and not record.fiscal_operation_id.return_fiscal_operation_id
-            ):
-                raise UserError(
-                    _("""Document without Return Fiscal Operation! \n Force one!""")
-                )
 
-            record.fiscal_operation_id = (
-                force_fiscal_operation_id
-                or record.fiscal_operation_id.return_fiscal_operation_id
+        if (
+            not force_fiscal_operation_id
+            and self.fiscal_operation_id
+            and not self.fiscal_operation_id.return_fiscal_operation_id
+        ):
+            raise UserError(
+                _("""Document without Return Fiscal Operation! \n Force one!""")
             )
+
+        fiscal_operation_id = (
+            force_fiscal_operation_id
+            or self.fiscal_operation_id.return_fiscal_operation_id
+        )
+
+        for value in default_values_list:
+            value.update({"fiscal_operation_id": fiscal_operation_id.id})
+        new_moves = super()._reverse_moves(
+            default_values_list=default_values_list, cancel=cancel
+        )
+        for record in new_moves.filtered(lambda i: i.document_type_id):
+
             record._onchange_fiscal_operation_id()
 
             for line in record.invoice_line_ids:
@@ -595,6 +580,13 @@ class AccountMove(models.Model):
                 line.fiscal_operation_id = (
                     force_fiscal_operation_id
                     or line.fiscal_operation_id.return_fiscal_operation_id
+                )
+                line.fiscal_operation_line_id = (
+                    line.fiscal_operation_id.line_definition(
+                        company=line.company_id,
+                        partner=line.partner_id,
+                        product=line.product_id,
+                    )
                 )
                 mapping_result = line.fiscal_operation_line_id.map_fiscal_taxes(
                     company=line.company_id,

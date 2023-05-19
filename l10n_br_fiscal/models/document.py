@@ -169,6 +169,9 @@ class Document(models.Model):
         selection=EDOC_PURPOSE,
         string="Finalidade",
         default=EDOC_PURPOSE_NORMAL,
+        compute="_compute_edoc_purpose",
+        store=True,
+        readonly=False,
     )
 
     event_ids = fields.One2many(
@@ -306,6 +309,12 @@ class Document(models.Model):
                         "Serie: {}, Number: {} !"
                     ).format(record.document_serie, record.document_number)
                 )
+
+    @api.depends("fiscal_operation_id")
+    def _compute_edoc_purpose(self):
+        for record in self:
+            if record.fiscal_operation_id:
+                record.edoc_purpose = record.fiscal_operation_id.edoc_purpose
 
     def _compute_document_name(self):
         self.ensure_one()

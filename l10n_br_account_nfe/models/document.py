@@ -117,6 +117,7 @@ class DocumentNfe(models.Model):
             and self.amount_financial_total > 0
             and self.nfe40_tpNF == NFE_OUT
             and self.document_type != "65"
+            and not self._is_without_payment()
         ):
             return True
         else:
