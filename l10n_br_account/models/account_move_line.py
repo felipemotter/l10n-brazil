@@ -16,8 +16,6 @@ from odoo.exceptions import UserError
 # don't need to be written through the account.move.line write.
 SHADOWED_FIELDS = [
     "name",
-    "company_id",
-    "currency_id",
     "product_id",
     "uom_id",
     "quantity",
