@@ -48,7 +48,6 @@ MOVE_TAX_USER_TYPE = {
 SHADOWED_FIELDS = [
     "company_id",
     "currency_id",
-    "partner_shipping_id",
     "user_id",
 ]
 
