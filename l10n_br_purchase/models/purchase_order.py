@@ -53,6 +53,8 @@ class PurchaseOrder(models.Model):
         string="Comments",
     )
 
+    company_country_id = fields.Many2one(related="company_id.country_id", store=True)
+
     @api.model
     def fields_view_get(
         self, view_id=None, view_type="form", toolbar=False, submenu=False

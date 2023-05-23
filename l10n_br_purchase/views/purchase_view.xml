@@ -21,8 +21,16 @@
           <field name="priority">100</field>
           <field name="arch" type="xml">
               <xpath expr="//field[@name='partner_ref']" position="after">
-                  <field name="fiscal_operation_id" required="1" />
-                  <field name="ind_final" />
+                  <field name="company_country_id" invisible="1" />
+                  <field
+                    name="fiscal_operation_id"
+                    attrs="{'invisible': [('company_country_id', '!=', %(base.br)d)]}"
+                />
+                  <field
+                    name="ind_final"
+                    required="0"
+                    attrs="{'invisible': [('fiscal_operation_id', '=', False)],'required': [('fiscal_operation_id', '!=', False)]}"
+                />
               </xpath>
               <xpath expr="//field[@name='order_line']" position="attributes">
                   <attribute
@@ -60,17 +68,17 @@
             >
                   <field
                     name="fiscal_operation_id"
-                    required="1"
                     options="{'no_create': True}"
+                    attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))], 'required': [('fiscal_operation_id', '!=', False),('display_type', '=', False)], 'invisible': [('fiscal_operation_id', '=', False)]}"
                 />
                   <field
                     name="fiscal_operation_line_id"
-                    required="1"
                     options="{'no_create': True}"
+                    attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))], 'required': [('fiscal_operation_id', '!=', False),('display_type', '=', False)], 'invisible': [('fiscal_operation_id', '=', False)]}"
                 />
                   <field
                     name="cfop_id"
-                    attrs="{'invisible': [('tax_icms_or_issqn', '=', 'issqn')]}"
+                    attrs="{'invisible': ['|', ('tax_icms_or_issqn', '=', 'issqn'), ('fiscal_operation_id', '=', False)]}"
                     options="{'no_create': True}"
                 />
                   <field
