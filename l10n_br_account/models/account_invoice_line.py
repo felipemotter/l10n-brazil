@@ -442,6 +442,7 @@ class AccountMoveLine(models.Model):
         # Atualiza os impostos contábeis relacionados aos impostos fiscais
         if self.move_id.move_type in ("in_invoice", "in_refund"):
             user_type = "purchase"
+        self.tax_ids = [(5, 0, 0)]
         self.tax_ids |= self.fiscal_tax_ids.account_taxes(user_type=user_type)
 
         # Caso a operação fiscal esteja definida para usar o impostos
