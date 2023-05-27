@@ -1,3 +1,4 @@
+from odoo.exceptions import UserError
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
@@ -72,3 +73,16 @@ class TestICMSRegulation(TransactionCase):
             ind_final=ind_final,
         )
         return tax_icms
+
+    def test_state_difal_base_duplicity(self):
+
+        demo_state = self.env.ref("base.state_br_sc")
+
+        with self.assertRaises(UserError):
+            self.env["l10n_br_fiscal.icms.difal.regulation"].create(
+                {
+                    "name": "Difal Test",
+                    "unique_base_state_ids": [(4, demo_state.id, 0)],
+                    "double_base_state_ids": [(4, demo_state.id, 0)],
+                }
+            )
