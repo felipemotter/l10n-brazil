@@ -50,7 +50,6 @@ class Document(models.Model):
     _inherit = [
         "l10n_br_fiscal.document.mixin",
         "l10n_br_fiscal.document.electronic",
-        "l10n_br_fiscal.document.invoice.mixin",
     ]
     _description = "Fiscal Document"
     _check_company_auto = True
@@ -139,11 +138,6 @@ class Document(models.Model):
         string="Fiscal Document Related",
     )
 
-    partner_id = fields.Many2one(
-        comodel_name="res.partner",
-        string="Partner",
-    )
-
     partner_shipping_id = fields.Many2one(
         comodel_name="res.partner",
         string="Shipping Address",
@@ -194,6 +188,199 @@ class Document(models.Model):
     dfe_id = fields.Many2one(
         comodel_name="l10n_br_fiscal.dfe",
         string="DF-e Consult",
+    )
+
+    partner_legal_name = fields.Char(
+        string="Legal Name",
+        related="commercial_partner_id.legal_name",
+    )
+
+    partner_name = fields.Char(
+        string="Partner Name",
+        related="commercial_partner_id.name",
+    )
+
+    partner_cnpj_cpf = fields.Char(
+        string="CNPJ",
+        related="commercial_partner_id.cnpj_cpf",
+    )
+
+    partner_inscr_est = fields.Char(
+        string="State Tax Number",
+        related="commercial_partner_id.inscr_est",
+    )
+
+    partner_ind_ie_dest = fields.Selection(
+        string="Contribuinte do ICMS",
+        related="commercial_partner_id.ind_ie_dest",
+    )
+
+    partner_inscr_mun = fields.Char(
+        string="Municipal Tax Number",
+        related="commercial_partner_id.inscr_mun",
+    )
+
+    partner_suframa = fields.Char(
+        string="Suframa",
+        related="commercial_partner_id.suframa",
+    )
+
+    partner_cnae_main_id = fields.Many2one(
+        comodel_name="l10n_br_fiscal.cnae",
+        string="Main CNAE",
+        related="commercial_partner_id.cnae_main_id",
+    )
+
+    partner_tax_framework = fields.Selection(
+        string="Tax Framework",
+        related="commercial_partner_id.tax_framework",
+    )
+
+    partner_street = fields.Char(
+        string="Partner Street",
+        related="commercial_partner_id.street",
+    )
+
+    partner_number = fields.Char(
+        string="Partner Number",
+        related="commercial_partner_id.street_number",
+    )
+
+    partner_street2 = fields.Char(
+        string="Partner Street2",
+        related="commercial_partner_id.street2",
+    )
+
+    partner_district = fields.Char(
+        string="Partner District",
+        related="commercial_partner_id.district",
+    )
+
+    partner_country_id = fields.Many2one(
+        comodel_name="res.country",
+        string="Partner Country",
+        related="commercial_partner_id.country_id",
+    )
+
+    partner_state_id = fields.Many2one(
+        comodel_name="res.country.state",
+        string="Partner State",
+        related="commercial_partner_id.state_id",
+    )
+
+    partner_city_id = fields.Many2one(
+        comodel_name="res.city",
+        string="Partner City",
+        related="commercial_partner_id.city_id",
+    )
+
+    partner_zip = fields.Char(
+        string="Partner Zip",
+        related="commercial_partner_id.zip",
+    )
+
+    partner_phone = fields.Char(
+        string="Partner Phone",
+        related="commercial_partner_id.phone",
+    )
+
+    partner_is_company = fields.Boolean(
+        string="Partner Is Company?",
+        related="commercial_partner_id.is_company",
+    )
+
+    processador_edoc = fields.Selection(
+        related="company_id.processador_edoc",
+    )
+
+    company_legal_name = fields.Char(
+        string="Company Legal Name",
+        related="company_id.legal_name",
+    )
+
+    company_name = fields.Char(
+        string="Company Name",
+        size=128,
+        related="company_id.name",
+    )
+
+    company_cnpj_cpf = fields.Char(
+        string="Company CNPJ",
+        related="company_id.cnpj_cpf",
+    )
+
+    company_inscr_est = fields.Char(
+        string="Company State Tax Number",
+        related="company_id.inscr_est",
+    )
+
+    company_inscr_mun = fields.Char(
+        string="Company Municipal Tax Number",
+        related="company_id.inscr_mun",
+    )
+
+    company_suframa = fields.Char(
+        string="Company Suframa",
+        related="company_id.suframa",
+    )
+
+    company_cnae_main_id = fields.Many2one(
+        comodel_name="l10n_br_fiscal.cnae",
+        string="Company Main CNAE",
+        related="company_id.cnae_main_id",
+    )
+
+    company_tax_framework = fields.Selection(
+        string="Company Tax Framework",
+        related="company_id.tax_framework",
+    )
+
+    company_street = fields.Char(
+        string="Company Street",
+        related="company_id.street",
+    )
+
+    company_number = fields.Char(
+        string="Company Number",
+        related="company_id.street_number",
+    )
+
+    company_street2 = fields.Char(
+        string="Company Street2",
+        related="company_id.street2",
+    )
+
+    company_district = fields.Char(
+        string="Company District",
+        related="company_id.district",
+    )
+
+    company_country_id = fields.Many2one(
+        comodel_name="res.country",
+        string="Company Country",
+        related="company_id.country_id",
+    )
+
+    company_state_id = fields.Many2one(
+        comodel_name="res.country.state",
+        string="Company State",
+        related="company_id.state_id",
+    )
+
+    company_city_id = fields.Many2one(
+        comodel_name="res.city",
+        string="Company City",
+        related="company_id.city_id",
+    )
+
+    company_zip = fields.Char(
+        string="Company ZIP",
+        related="company_id.zip",
+    )
+
+    company_phone = fields.Char(
+        string="Company Phone",
+        related="company_id.phone",
     )
 
     xml_error_message = fields.Text(
@@ -272,7 +459,9 @@ class Document(models.Model):
             invalid_number = False
 
             if record.issuer == DOCUMENT_ISSUER_PARTNER:
-                domain.append(("partner_id", "=", record.partner_id.id))
+                domain.append(
+                    ("commercial_partner_id", "=", record.commercial_partner_id.id)
+                )
             else:
                 if record.document_serie_id:
                     invalid_number = record.document_serie_id._is_invalid_number(

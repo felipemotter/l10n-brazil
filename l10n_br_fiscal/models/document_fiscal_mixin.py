@@ -55,6 +55,13 @@ class FiscalDocumentMixin(models.AbstractModel):
         index=True,
     )
 
+    commercial_partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Commercial Entity",
+        related="partner_id.commercial_partner_id",
+        store=True,
+    )
+
     fiscal_operation_type = fields.Selection(
         related="fiscal_operation_id.fiscal_operation_type",
         string="Fiscal Operation Type",

@@ -63,10 +63,6 @@ class AccountMoveLine(models.Model):
         related="cfop_id.destination", string="CFOP Destination"
     )
 
-    partner_company_type = fields.Selection(related="partner_id.company_type")
-
-    ind_final = fields.Selection(related="move_id.ind_final")
-
     fiscal_genre_code = fields.Char(
         related="fiscal_genre_id.code",
         string="Fiscal Product Genre Code",
@@ -79,39 +75,6 @@ class AccountMoveLine(models.Model):
         store=True,
         compute="_compute_tax_line_id",
         help="Indicates that this journal item is a tax line",
-    )
-
-    # The following fields belong to the fiscal document line mixin
-    # but they are redefined here to ensure they are recomputed in the
-    # account.move.line views.
-    icms_cst_code = fields.Char(
-        related="icms_cst_id.code",
-        string="ICMS CST Code",
-    )
-
-    ipi_cst_code = fields.Char(
-        related="ipi_cst_id.code",
-        string="IPI CST Code",
-    )
-
-    cofins_cst_code = fields.Char(
-        related="cofins_cst_id.code",
-        string="COFINS CST Code",
-    )
-
-    cofinsst_cst_code = fields.Char(
-        related="cofinsst_cst_id.code",
-        string="COFINS ST CST Code",
-    )
-
-    pis_cst_code = fields.Char(
-        related="pis_cst_id.code",
-        string="PIS CST Code",
-    )
-
-    pisst_cst_code = fields.Char(
-        related="pisst_cst_id.code",
-        string="PIS ST CST Code",
     )
 
     wh_move_line_id = fields.Many2one(

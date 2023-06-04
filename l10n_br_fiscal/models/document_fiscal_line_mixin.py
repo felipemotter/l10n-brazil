@@ -98,7 +98,16 @@ class FiscalDocumentLineMixin(models.AbstractModel):
 
     partner_id = fields.Many2one(comodel_name="res.partner", string="Partner")
 
-    partner_company_type = fields.Selection(related="partner_id.company_type")
+    commercial_partner_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Commercial Entity",
+        related="partner_id.commercial_partner_id",
+        store=True,
+    )
+
+    partner_company_type = fields.Selection(
+        related="commercial_partner_id.company_type"
+    )
 
     uom_id = fields.Many2one(comodel_name="uom.uom", string="UOM")
 
