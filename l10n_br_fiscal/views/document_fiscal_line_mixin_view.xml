@@ -423,6 +423,7 @@
                                 attrs="{'invisible': [('tax_icms_or_issqn', '=', 'issqn')]}"
                             >
                   <group string="IPI">
+                    <field name="ipi_base_with_ii" />
                       <field
                                         name="ipi_tax_id"
                                         options="{'no_create': True, 'no_create_edit': True}"

@@ -513,6 +513,12 @@ class FiscalDocumentLineMixin(models.AbstractModel):
         selection=TAX_BASE_TYPE, string="IPI Base Type", default=TAX_BASE_TYPE_PERCENT
     )
 
+    ipi_base_with_ii = fields.Boolean(
+        string="Include II value in IPI Base",
+        help="Check this box if the Import Tax (II) should be included in the base "
+        "for taxes of this tax group.",
+    )
+
     ipi_base = fields.Monetary(string="IPI Base")
 
     ipi_percent = fields.Float(string="IPI %")

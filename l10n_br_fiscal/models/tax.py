@@ -560,12 +560,14 @@ class Tax(models.Model):
         cfop = kwargs.get("cfop")
         operation_line = kwargs.get("operation_line")
         fiscal_operation_type = operation_line.fiscal_operation_type or FISCAL_OUT
+        ipi_base_with_ii = kwargs.get("ipi_base_with_ii", True)
 
         # Se for entrada de importação o II entra na base de calculo do IPI
         if (
             cfop
             and cfop.destination == CFOP_DESTINATION_EXPORT
             and fiscal_operation_type == FISCAL_IN
+            and ipi_base_with_ii
         ):
             tax_dict_ii = taxes_dict.get("ii", {})
             tax_dict["add_to_base"] += tax_dict_ii.get("tax_value", 0.00)
