@@ -107,8 +107,8 @@ class L10nBrCNABChangeMethods(models.Model):
                     "%(order_state)s related to invoice %(invoice_name)s created, "
                     "the CNAB file should be sent to bank, because only after "
                     "that it is possible make another CNAB Instruction.",
-                    order_name=payment_line_to_be_send.order_id.name,
-                    order_state=payment_line_to_be_send.order_id.state,
+                    order_name=payment_line_to_be_send[0].order_id.name,
+                    order_state=payment_line_to_be_send[0].order_id.state,
                     invoice_name=self.move_id.name,
                 )
             )
