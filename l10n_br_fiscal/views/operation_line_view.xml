@@ -49,6 +49,7 @@
                             <field name="product_type" />
                             <field name="tax_icms_or_issqn" />
                             <field name="icms_origin" />
+                            <field name="ncm_ids" widget="many2many_tags" />
                         </group>
                     </group>
                     <notebook>
