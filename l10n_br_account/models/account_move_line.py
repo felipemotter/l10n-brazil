@@ -453,15 +453,18 @@ class AccountMoveLine(models.Model):
         os impostos contábeis relacionados"""
         result = super()._update_taxes()
 
-        # Atualiza os impostos contábeis relacionados aos impostos fiscais
-        user_type = "sale"
-        if self.move_id.move_type in ("in_invoice", "in_refund"):
-            user_type = "purchase"
+        if self.parent_state != "posted":
+            # Atualiza os impostos contábeis relacionados aos impostos fiscais
+            user_type = "sale"
+            if self.move_id.move_type in ("in_invoice", "in_refund"):
+                user_type = "purchase"
 
-        self.tax_ids = self.fiscal_tax_ids.account_taxes(
-            user_type=user_type, fiscal_operation=self.fiscal_operation_id
-        )
-        self._onchange_mark_recompute_taxes()
+            self.tax_ids = self.fiscal_tax_ids.with_context(
+                default_company_id=self.move_id.company_id.id
+            ).account_taxes(
+                user_type=user_type, fiscal_operation=self.fiscal_operation_id
+            )
+            self._onchange_mark_recompute_taxes()
 
         return result
 
