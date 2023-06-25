@@ -197,7 +197,7 @@ class Tax(models.Model):
         if not tax_dict.get("value_amount") and tax.value_amount:
             tax_dict["value_amount"] = tax.value_amount
 
-        if tax_dict["base_manual"]:
+        if tax_dict.get("base_manual"):
             base_amount = tax_dict["base_manual"]
         else:
             # calculate base
@@ -293,7 +293,7 @@ class Tax(models.Model):
 
         base_amount = tax_dict.get("base", 0.00)
 
-        if tax_dict["tax_value_manual"]:
+        if tax_dict.get("tax_value_manual"):
             tax_dict["tax_value"] = tax_dict["tax_value_manual"]
         else:
             if tax_dict["base_type"] == "percent":
