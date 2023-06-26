@@ -52,6 +52,34 @@ def pre_init_hook(cr):
             (company.fiscal_dummy_id.fiscal_line_ids[0].id, company.id),
         )
 
+    cr.execute("select demo from ir_module_module where name='l10n_br_account';")
+    is_demo = cr.fetchone()[0]
+    if is_demo:
+        # load convenient COAs that are used in demos and tests
+        # without a hard dependency (you don't need all COAs for production)
+        coa_modules = env["ir.module.module"].search(
+            [
+                ("name", "in", ("l10n_br_coa_generic", "l10n_br_coa_simple")),
+                ("state", "=", "uninstalled"),
+            ]
+        )
+
+        if coa_modules:
+            raise UserError(
+                _(
+                    """It looks like your database %s is running with demo
+                   data. But the l10n_br_account module will need you to install the
+                   l10n_br_coa_simple and l10n_br_coa_generic
+                   chart of accounts modules first to load l10n_br_account demo data
+                   or run its tests properly (for production, these dependencies are not
+                   required, that is why these are not usual explicit
+                   module dependencies).
+                   Please install the l10n_br_coa_simple and l10n_br_coa_generic modules
+                   first and try installing the l10n_br_account module again.
+                """,
+                    cr.dbname,
+                )
+            )
 
 def post_init_hook(cr, registry):
     """Relate fiscal taxes to account taxes."""
