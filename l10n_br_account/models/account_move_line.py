@@ -448,23 +448,59 @@ class AccountMoveLine(models.Model):
 
         return result
 
-    def _update_taxes(self):
-        """Ao atualizar os impostos fiscais, são atualizados
-        os impostos contábeis relacionados"""
-        result = super()._update_taxes()
+    @api.onchange(
+        "fiscal_tax_ids" "icms_base_manual",
+        "icms_value_manual",
+        "icmsst_base_manual",
+        "icmsst_value_manual",
+        "issqn_base_manual",
+        "issqn_value_manual",
+        "issqn_wh_base_manual",
+        "issqn_wh_value_manual",
+        "icmsst_wh_base_manual",
+        "icmsst_wh_value_manual",
+        "ipi_base_manual",
+        "ipi_value_manual",
+        "ii_base_manual",
+        "ii_value_manual",
+        "cofins_base_manual",
+        "cofins_value_manual",
+        "cofinsst_base_manual",
+        "cofinsst_value_manual",
+        "cofins_wh_base_manual",
+        "cofins_wh_value_manual",
+        "pis_base_manual",
+        "pis_value_manual",
+        "pisst_base_manual",
+        "pisst_value_manual",
+        "pis_wh_base_manual",
+        "pis_wh_value_manual",
+        "csll_base_manual",
+        "csll_value_manual",
+        "csll_wh_base_manual",
+        "csll_wh_value_manual",
+        "irpj_base_manual",
+        "irpj_value_manual",
+        "irpj_wh_base_manual",
+        "irpj_wh_value_manual",
+        "inss_base_manual",
+        "inss_value_manual",
+        "inss_wh_base_manual",
+        "inss_wh_value_manual",
+    )
+    def _onchange_fiscal_tax_ids(self):
+        """Ao alterar o campo fiscal_tax_ids que contém os impostos fiscais,
+        são atualizados os impostos contábeis relacionados"""
+        result = super()._onchange_fiscal_tax_ids()
 
-        if self.parent_state != "posted":
-            # Atualiza os impostos contábeis relacionados aos impostos fiscais
-            user_type = "sale"
-            if self.move_id.move_type in ("in_invoice", "in_refund"):
-                user_type = "purchase"
+        # Atualiza os impostos contábeis relacionados aos impostos fiscais
+        user_type = "sale"
+        if self.move_id.move_type in ("in_invoice", "in_refund"):
+            user_type = "purchase"
 
-            self.tax_ids = self.fiscal_tax_ids.with_context(
-                default_company_id=self.move_id.company_id.id
-            ).account_taxes(
-                user_type=user_type, fiscal_operation=self.fiscal_operation_id
-            )
-            self._onchange_mark_recompute_taxes()
+        self.tax_ids = self.fiscal_tax_ids.account_taxes(
+            user_type=user_type, fiscal_operation=self.fiscal_operation_id
+        )
 
         return result
 
