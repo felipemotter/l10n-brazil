@@ -80,6 +80,8 @@ class OperationLine(models.Model):
         string="ICMS or ISSQN Tax",
     )
 
+    ncm_ids = fields.Many2many(comodel_name="l10n_br_fiscal.ncm")
+
     line_inverse_id = fields.Many2one(
         comodel_name="l10n_br_fiscal.operation.line",
         string="Operation Line Inverse",
