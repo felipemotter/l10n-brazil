@@ -19,6 +19,7 @@
         # Views
         "views/account_move_view.xml",
         "views/account_journal_view.xml",
+        "views/account_payment_mode.xml",
         # Wizard
         "wizard/import_statement_view.xml",
     ],
