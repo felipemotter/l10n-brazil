@@ -405,7 +405,6 @@ class NFe(spec_models.StackedModel):
     # TODO should be done by framework?
     nfe40_det = fields.One2many(
         comodel_name="l10n_br_fiscal.document.line",
-        inverse_name="document_id",
         related="fiscal_line_ids",
     )
 
