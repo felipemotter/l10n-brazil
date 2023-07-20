@@ -7,9 +7,9 @@
         <field name="inherit_id" ref="account.view_account_invoice_filter" />
         <field name="arch" type="xml">
             <field name="partner_id" position="before">
-                <field name="legal_name" string="Legal Name" />
-                <field name="cnpj_cpf" string="CNPJ/CPF" />
-                <field name="ie" string="State Tax Number" />
+                <field name="partner_legal_name" string="Legal Name" />
+                <field name="partner_cnpj_cpf" string="CNPJ/CPF" />
+                <field name="partner_inscr_est" string="State Tax Number" />
             </field>
             <field name="name" position="attributes">
                 <attribute
@@ -82,13 +82,7 @@
                     name="document_type_id"
                     attrs="{
                     'invisible': [
-                            '|',
-                            '&amp;',
-                            '|',
                             ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')),
-                            ('create_date', '=', True),
-                            ('document_type_id', '=', False),
-                            ('currency_id', '!=',  %(base.BRL)d),
                         ],
                     'readonly': [('state', '!=', 'draft')]
                 }"

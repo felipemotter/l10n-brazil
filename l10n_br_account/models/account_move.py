@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
+from odoo.tools import mute_logger
 
 from odoo.addons.l10n_br_fiscal.constants.fiscal import (
     DOCUMENT_ISSUER_COMPANY,
@@ -56,38 +57,28 @@ SHADOWED_FIELDS = [
 ]
 
 
+class InheritsCheckMuteLogger(mute_logger):
+    """
+    Mute the Model#_inherits_check warning
+    because the _inherits field is not required.
+    """
+
+    def filter(self, record):
+        msg = record.getMessage()
+        if "Field definition for _inherits reference" in msg:
+            return 0
+        return super().filter(record)
+
+
 class AccountMove(models.Model):
     _name = "account.move"
     _inherit = [
         _name,
         "l10n_br_fiscal.document.mixin.methods",
-        "l10n_br_fiscal.document.invoice.mixin",
+        "l10n_br_fiscal.document.move.mixin",
     ]
     _inherits = {"l10n_br_fiscal.document": "fiscal_document_id"}
     _order = "date DESC, name DESC"
-
-    # some account.move records _inherits from an fiscal.document that is
-    # disabled with active=False (dummy record) in the l10n_br_fiscal_document table.
-    # To make the invoices still visible, we set active=True
-    # in the account_move table.
-    active = fields.Boolean(
-        default=True,
-    )
-
-    cnpj_cpf = fields.Char(
-        string="CNPJ/CPF",
-        related="partner_id.cnpj_cpf",
-    )
-
-    legal_name = fields.Char(
-        string="Adapted Legal Name",
-        related="partner_id.legal_name",
-    )
-
-    ie = fields.Char(
-        string="Adapted State Tax Number",
-        related="partner_id.inscr_est",
-    )
 
     document_electronic = fields.Boolean(
         related="document_type_id.electronic",
@@ -97,7 +88,6 @@ class AccountMove(models.Model):
     fiscal_document_id = fields.Many2one(
         comodel_name="l10n_br_fiscal.document",
         string="Fiscal Document",
-        required=True,
         copy=False,
         ondelete="cascade",
     )
@@ -108,9 +98,15 @@ class AccountMove(models.Model):
         compute="_compute_fiscal_operation_type",
     )
 
-    # override the incoterm inherited by the fiscal document
-    # to have the same value as the native incoterm of the invoice.
-    incoterm_id = fields.Many2one(related="invoice_incoterm_id")
+    @api.constrains("fiscal_document_id", "document_type_id")
+    def _check_fiscal_document_type(self):
+        for rec in self:
+            if rec.document_type_id and not rec.fiscal_document_id:
+                raise UserError(
+                    _(
+                        "You cannot set a document type when the move has no Fiscal Document!"
+                    )
+                )
 
     def _compute_fiscal_operation_type(self):
         for inv in self:
@@ -130,6 +126,17 @@ class AccountMove(models.Model):
         return self.mapped("invoice_line_ids")
 
     @api.model
+    def _inherits_check(self):
+        """
+        Overriden to avoid the super method to set the fiscal_document_id
+        field as required.
+        """
+        with InheritsCheckMuteLogger("odoo.models"):  # mute spurious warnings
+            super()._inherits_check()
+        field = self._fields.get("fiscal_document_id")
+        field.required = False  # unset the required = True assignement
+
+    @api.model
     def _shadowed_fields(self):
         """Returns the list of shadowed fields that are synced
         from the parent."""
@@ -139,7 +146,7 @@ class AccountMove(models.Model):
     def _inject_shadowed_fields(self, vals_list):
         for vals in vals_list:
             for field in self._shadowed_fields():
-                if vals.get(field):
+                if field in vals:
                     vals["fiscal_%s" % (field,)] = vals[field]
 
     @api.model
@@ -147,7 +154,9 @@ class AccountMove(models.Model):
         self, view_id=None, view_type="form", toolbar=False, submenu=False
     ):
         invoice_view = super().fields_view_get(view_id, view_type, toolbar, submenu)
-        if view_type == "form":
+        if self.env.company.country_id.code != "BR":
+            return invoice_view
+        elif view_type == "form":
             view = self.env["ir.ui.view"]
 
             if view_id == self.env.ref("l10n_br_account.fiscal_invoice_form").id:
@@ -230,9 +239,7 @@ class AccountMove(models.Model):
         "ind_final",
     )
     def _compute_amount(self):
-        if self.company_id.country_id.code != "BR":
-            return super()._compute_amount()
-        for move in self:
+        for move in self.filtered(lambda m: m.company_id.country_id.code == "BR"):
             for line in move.line_ids:
                 if (
                     move.is_invoice(include_receipts=True)
@@ -241,7 +248,7 @@ class AccountMove(models.Model):
                     line._update_taxes()
 
         result = super()._compute_amount()
-        for move in self:
+        for move in self.filtered(lambda m: m.company_id.country_id.code == "BR"):
             if move.move_type == "entry" or move.is_outbound():
                 sign = -1
             else:
@@ -284,7 +291,9 @@ class AccountMove(models.Model):
         )._move_autocomplete_invoice_lines_create(vals_list)
         for vals in new_vals_list:
             if not vals.get("document_type_id"):
-                vals["fiscal_document_id"] = self.env.company.fiscal_dummy_id.id
+                vals[
+                    "fiscal_document_id"
+                ] = False  # self.env.company.fiscal_dummy_id.id
         return new_vals_list
 
     def _move_autocomplete_invoice_lines_values(self):
@@ -319,7 +328,9 @@ class AccountMove(models.Model):
     def create(self, vals_list):
         self._inject_shadowed_fields(vals_list)
         self._copy_nfe_di_to_line_ids(vals_list)
-        invoice = super().create(vals_list)
+        invoice = super(AccountMove, self.with_context(create_from_move=True)).create(
+            vals_list
+        )
         return invoice
 
     def write(self, values):
@@ -335,10 +346,7 @@ class AccountMove(models.Model):
         for move in self:
             if not move.exists():
                 continue
-            if (
-                move.fiscal_document_id
-                and move.fiscal_document_id.id != self.env.company.fiscal_dummy_id.id
-            ):
+            if move.fiscal_document_id and move.fiscal_document_id:
                 unlink_documents |= move.fiscal_document_id
             unlink_moves |= move
         result = super(AccountMove, unlink_moves).unlink()
@@ -346,22 +354,12 @@ class AccountMove(models.Model):
         self.clear_caches()
         return result
 
-    @api.returns("self", lambda value: value.id)
-    def copy(self, default=None):
-        default = default or {}
-        if self.document_type_id:
-            default["fiscal_line_ids"] = False
-        else:
-            default["fiscal_line_ids"] = self.line_ids[0]
-        return super().copy(default)
-
     @api.model
     def _serialize_tax_grouping_key(self, grouping_dict):
         return "-".join(str(v) for v in grouping_dict.values())
 
     @api.model
     def _compute_taxes_mapped(self, base_line):
-
         move = base_line.move_id
 
         if move.is_invoice(include_receipts=True):
@@ -469,32 +467,6 @@ class AccountMove(models.Model):
                 )
         return result
 
-    # @api.model
-    # def invoice_line_move_line_get(self):
-    #     # TODO FIXME migrate. No such method in Odoo 13+
-    #     move_lines_dict = super().invoice_line_move_line_get()
-    #     new_mv_lines_dict = []
-    #     for line in move_lines_dict:
-    #         invoice_line = self.line_ids.filtered(lambda l: l.id == line.get("invl_id"))
-    #
-    #         if invoice_line.fiscal_operation_id:
-    #             if invoice_line.fiscal_operation_id.deductible_taxes:
-    #                 line["price"] = invoice_line.price_total
-    #             else:
-    #                 line["price"] = invoice_line.price_total - (
-    #                     invoice_line.amount_tax_withholding
-    #                     + invoice_line.amount_tax_included
-    #                 )
-    #
-    #         if invoice_line.cfop_id:
-    #             if invoice_line.cfop_id.finance_move:
-    #                 new_mv_lines_dict.append(line)
-    #         else:
-    #             new_mv_lines_dict.append(line)
-    #
-    #     return new_mv_lines_dict
-    #
-
     @api.onchange("fiscal_operation_id")
     def _onchange_fiscal_operation_id(self):
         result = super()._onchange_fiscal_operation_id()
@@ -519,19 +491,6 @@ class AccountMove(models.Model):
             action["views"] = form_view
         action["res_id"] = self.id
         return action
-
-    def action_date_assign(self):
-        """Usamos esse método para definir a data de emissão do documento
-        fiscal e numeração do documento fiscal para ser usado nas linhas
-        dos lançamentos contábeis."""
-        # TODO FIXME migrate. No such method in Odoo 13+
-        result = super().action_date_assign()
-        for invoice in self:
-            if invoice.document_type_id:
-                if invoice.issuer == DOCUMENT_ISSUER_COMPANY:
-                    invoice.fiscal_document_id._document_date()
-                    invoice.fiscal_document_id._document_number()
-        return result
 
     def button_draft(self):
         for i in self.filtered(lambda d: d.document_type_id):
