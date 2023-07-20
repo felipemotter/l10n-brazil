@@ -21,6 +21,12 @@ class PurchaseOrderLine(models.Model):
         ]
         return domain
 
+    company_country_id = fields.Many2one(related="company_id.country_id", store=True)
+
+    order_fiscal_operation_id = fields.Many2one(
+        comodel_name="l10n_br_fiscal.operation", related="order_id.fiscal_operation_id"
+    )
+
     # Adapt Mixin's fields
     fiscal_operation_id = fields.Many2one(
         comodel_name="l10n_br_fiscal.operation",
