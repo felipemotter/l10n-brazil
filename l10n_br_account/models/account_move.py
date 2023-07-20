@@ -299,9 +299,7 @@ class AccountMove(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         self._inject_shadowed_fields(vals_list)
-        invoice = super(AccountMove, self.with_context(create_from_move=True)).create(
-            vals_list
-        )
+        invoice = super().create(vals_list)
         return invoice
 
     def write(self, values):

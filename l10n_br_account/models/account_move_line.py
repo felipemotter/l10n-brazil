@@ -216,42 +216,22 @@ class AccountMoveLine(models.Model):
                     )
                 )
         self._inject_shadowed_fields(vals_list)
-        results = super(
-            AccountMoveLine, self.with_context(create_from_move_line=True)
-        ).create(vals_list)
-
-        # Unfortunately when creating several aml there is no way to selectively avoid
-        # the creation of l10n_br_fiscal.document.line as it would mess the association
-        # of the remaining fiscal document lines with their proper aml. That's why we
-        # remove the useless fiscal document lines here.
-        for line in results:
-            if not fiscal_doc_id or line.exclude_from_invoice_tab:
-                fiscal_line_to_delete = line.fiscal_document_line_id
-                line.fiscal_document_line_id = False
-                fiscal_line_to_delete.sudo().unlink()
+        results = super().create(vals_list)
 
         return results
 
     def write(self, values):
         if values.get("product_uom_id"):
             values["uom_id"] = values["product_uom_id"]
-        non_dummy = self.filtered(lambda line: line.fiscal_document_line_id)
         self._inject_shadowed_fields([values])
-        if values.get("move_id") and len(non_dummy) == len(self):
-            # we can write the document_id in all lines
-            values["document_id"] = (
-                self.env["account.move"].browse(values["move_id"]).fiscal_document_id.id
-            )
-            result = super().write(values)
-        elif values.get("move_id"):
-            # we will only define document_id for non dummy lines
-            result = super().write(values)
-            doc_id = (
-                self.env["account.move"].browse(values["move_id"]).fiscal_document_id.id
-            )
-            super(AccountMoveLine, non_dummy).write({"document_id": doc_id})
-        else:
-            result = super().write(values)
+        result = super().write(values)
+
+        # Erase document_id if the line is excluded from invoice tab
+        for line in self.filtered(lambda l: l.exclude_from_invoice_tab):
+            to_write = {
+                "document_id": False,
+            }
+            result |= super(AccountMoveLine, line).write(to_write)
 
         for line in self:
             if line.wh_move_line_id and (
