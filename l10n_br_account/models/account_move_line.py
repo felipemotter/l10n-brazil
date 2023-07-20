@@ -40,6 +40,11 @@ class AccountMoveLine(models.Model):
         ondelete="cascade",
     )
 
+    uom_id = fields.Many2one(
+        string="Mixin UOM",
+        related="product_uom_id",
+    )
+
     document_type_id = fields.Many2one(
         comodel_name="l10n_br_fiscal.document.type",
         related="move_id.document_type_id",

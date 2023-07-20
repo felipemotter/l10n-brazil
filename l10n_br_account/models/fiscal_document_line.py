@@ -14,6 +14,10 @@ class FiscalDocumentLine(models.Model):
         string="Invoice Lines",
     )
 
+    uom_id = fields.Many2one(
+        related="account_line_ids.product_uom_id",
+    )
+
     # proxy fields to enable writing the related (shadowed) fields
     # to the fiscal doc line from the aml through the _inherits system
     # despite they have the same names.
