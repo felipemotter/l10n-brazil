@@ -181,7 +181,7 @@ class Tax(models.Model):
         return cst
 
     @api.model
-    def _compute_tax_base(self, tax, tax_dict, **kwargs):
+    def _compute_tax_base(self, tax, tax_dict, skip_base_calculation=False, **kwargs):
         """Calculates the base, percentage, and tax amount."""
 
         company = kwargs.get("company", tax.env.company)
@@ -200,9 +200,11 @@ class Tax(models.Model):
         if not tax_dict.get("value_amount") and tax.value_amount:
             tax_dict["value_amount"] = tax.value_amount
 
-        if tax_dict.get("base_manual"):
-            base_amount = tax_dict["base_manual"]
-        else:
+        base_manual = tax_dict.get("base_manual")
+        base_default = tax_dict.get("base")
+        base_amount = base_manual if base_manual is not None else base_default
+
+        if not base_manual and not skip_base_calculation:
             # calculate base
             if tax.tax_group_id.base_with_additional_values:
                 tax_dict["add_to_base"] += sum(
@@ -257,7 +259,7 @@ class Tax(models.Model):
         return tax_dict
 
     @api.model
-    def _compute_tax(self, tax, taxes_dict, **kwargs):
+    def _compute_tax(self, tax, taxes_dict, skip_base_calculation=False, **kwargs):
         """Generic calculation of Brazilian taxes"""
 
         company = kwargs.get("company", tax.env.company)
@@ -292,7 +294,9 @@ class Tax(models.Model):
             tax_dict_icms = taxes_dict.get("icms", {})
             tax_dict["remove_from_base"] += tax_dict_icms.get("tax_value", 0.00)
 
-        tax_dict = self._compute_tax_base(tax, tax_dict, **kwargs)
+        tax_dict = self._compute_tax_base(
+            tax, tax_dict, skip_base_calculation, **kwargs
+        )
 
         base_amount = tax_dict.get("base", 0.00)
 
@@ -538,7 +542,9 @@ class Tax(models.Model):
 
         tax_dict.pop("percent_amount", None)
 
-        tax_dict.update(self._compute_tax(tax, taxes_dict, **kwargs))
+        tax_dict.update(
+            self._compute_tax(tax, taxes_dict, skip_base_calculation=True, **kwargs)
+        )
 
         tax_dict.update({"icms_base_type": tax.icms_base_type})
 
