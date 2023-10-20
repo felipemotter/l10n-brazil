@@ -551,7 +551,7 @@ class Tax(models.Model):
         tax_dict["fcpst_base"] = taxes_dict.get("icmsst", {}).get("base", 0.00)
 
         # TODO Improve this condition
-        if icms_cst_id.code in ICSM_CST_CSOSN_ST_BASE:
+        if icms_cst_id and icms_cst_id.code in ICSM_CST_CSOSN_ST_BASE:
             tax_dict["fcpst_value"] = tax_dict["fcpst_base"] * (
                 tax_dict["percent_amount"] / 100
             )
