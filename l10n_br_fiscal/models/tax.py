@@ -557,7 +557,7 @@ class Tax(models.Model):
             )
             tax_dict["fcpst_value"] -= tax_dict["tax_value"]
 
-        return self._compute_tax(tax, taxes_dict, **kwargs)
+        return self._compute_tax(tax, taxes_dict, skip_base_calculation=True, **kwargs)
 
     @api.model
     def _compute_icmsst(self, tax, taxes_dict, **kwargs):
