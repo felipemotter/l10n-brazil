@@ -723,9 +723,13 @@ class Tax(models.Model):
             kwargs.update({"cst": tax.cst_from_tax(fiscal_operation_type)})
             try:
                 compute_method = getattr(self, "_compute_%s" % tax.tax_domain)
-                taxes[tax.tax_domain].update(compute_method(tax, taxes, **kwargs))
 
             except AttributeError:
+                compute_method = False
+
+            if compute_method:
+                taxes[tax.tax_domain].update(compute_method(tax, taxes, **kwargs))
+            else:
                 taxes[tax.tax_domain].update(tax._compute_tax(tax, taxes, **kwargs))
 
             if taxes[tax.tax_domain]["tax_include"]:
