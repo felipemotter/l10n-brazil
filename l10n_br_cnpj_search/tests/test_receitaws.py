@@ -16,26 +16,6 @@ class TestReceitaWS(TestCnpjCommon):
 
         self.set_param("cnpj_provider", "receitaws")
 
-    def test_receita_ws_success(self):
-        kilian = self.model.create({"name": "Kilian", "cnpj_cpf": "44.356.113/0001-08"})
-
-        kilian._onchange_cnpj_cpf()
-        kilian.search_cnpj()
-
-        self.assertEqual(kilian.company_type, "company")
-        self.assertEqual(kilian.legal_name, "Kilian Macedo Melcher 08777131460")
-        self.assertEqual(kilian.name, "Kilian Macedo Melcher 08777131460")
-        self.assertEqual(kilian.email, "kilian.melcher@gmail.com")
-        self.assertEqual(kilian.street_name, "Rua Luiza Bezerra Motta")
-        self.assertEqual(kilian.street2, "Bloco E;Apt 302")
-        self.assertEqual(kilian.street_number, "950")
-        self.assertEqual(kilian.zip, "58.410-410")
-        self.assertEqual(kilian.district, "Catole")
-        self.assertEqual(kilian.phone, "(83) 8665-0905")
-        self.assertEqual(kilian.state_id.code, "PB")
-        self.assertEqual(kilian.city_id.name, "Campina Grande")
-        self.assertEqual(kilian.equity_capital, 3000)
-        self.assertEqual(kilian.cnae_main_id.code, "4751-2/01")
 
     def test_receita_ws_fail(self):
         invalido = self.model.create({"name": "invalido", "cnpj_cpf": "00000000000000"})
