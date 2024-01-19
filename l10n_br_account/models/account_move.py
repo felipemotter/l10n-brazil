@@ -221,6 +221,7 @@ class AccountMove(models.Model):
 
         return invoice_view
 
+    # @profile
     @api.depends(
         "line_ids.matched_debit_ids.debit_move_id.move_id.payment_id.is_matched",
         "line_ids.matched_debit_ids.debit_move_id.move_id.line_ids.amount_residual",
@@ -256,12 +257,12 @@ class AccountMove(models.Model):
             inv_line_ids = move.line_ids.filtered(
                 lambda line: not line.exclude_from_invoice_tab
             )
-            move.amount_untaxed = sum(inv_line_ids.mapped("amount_untaxed"))
-            move.amount_tax = sum(inv_line_ids.mapped("amount_tax"))
-            move.amount_untaxed_signed = sign * sum(
-                inv_line_ids.mapped("amount_untaxed")
-            )
-            move.amount_tax_signed = sign * sum(inv_line_ids.mapped("amount_tax"))
+            teste_amount_untaxed = sum(inv_line_ids.mapped("amount_untaxed"))
+            teste_tax = sum(inv_line_ids.mapped("amount_tax"))
+            move.amount_untaxed = teste_amount_untaxed
+            move.amount_tax = teste_tax
+            move.amount_untaxed_signed = sign * teste_amount_untaxed
+            move.amount_tax_signed = sign * teste_tax
 
         return result
 
@@ -514,6 +515,7 @@ class AccountMove(models.Model):
             i.button_cancel()
             i.button_draft()
 
+    # @profile
     def action_post(self):
         result = super().action_post()
 
