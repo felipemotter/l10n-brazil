@@ -1,5 +1,6 @@
 from odoo.tests.common import TransactionCase
 
+
 class TestPartnerCnpjSearchWizard(TransactionCase):
     def setUp(self):
         super(TestPartnerCnpjSearchWizard, self).setUp()
@@ -18,11 +19,11 @@ class TestPartnerCnpjSearchWizard(TransactionCase):
 
         self.assertEqual(
             wizard.legal_name,
-            "Nu Financeira S.A. - Sociedade De Credito, Financiamento E Investimento"
+            "Nu Financeira S.A. - Sociedade De Credito, Financiamento E Investimento",
         )
         self.assertEqual(
             wizard.name,
-            "Nu Financeira S.A. - Sociedade De Credito, Financiamento E Investimento"
+            "Nu Financeira S.A. - Sociedade De Credito, Financiamento E Investimento",
         )
         self.assertEqual(wizard.street_name, "Rua Capote Valente")
         self.assertEqual(wizard.street2, "Andar 12 Ao 15")
@@ -40,7 +41,6 @@ class TestPartnerCnpjSearchWizard(TransactionCase):
         wizard.street_name = "ROD SC 410"
         wizard.district = ""
         wizard.email = "recursoshumanos@macris.com.br"
-
 
         wizard.action_update_partner()
         self.assertEqual(partner.legal_name, original_legal_name)

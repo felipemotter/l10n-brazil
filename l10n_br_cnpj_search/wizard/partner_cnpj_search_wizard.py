@@ -109,7 +109,6 @@ class PartnerCnpjSearchWizard(models.TransientModel):
 
         partner = partner_model.browse(partner_id)
 
-
         values_to_update = {
             "legal_name": self.legal_name,
             "name": self.name,
