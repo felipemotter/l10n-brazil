@@ -38,17 +38,18 @@ class PartyMixin(models.AbstractModel):
     def action_open_cnpj_search_wizard(self):
         if not self.cnpj_cpf:
             raise UserError(_("Please enter your CNPJ"))
-        # Forces the system to enter a name so the user doesn't have to type
-        if not self.name:
-            self.name = "/"
-
         if self.cnpj_validation_disabled():
             raise UserError(
                 _(
-                    "It is necessary to activate the option to validate de CNPJ to use this "
-                    + "functionality."
+                    "It is necessary to activate the option to validate de CNPJ to use"
+                    " this functionality."
                 )
             )
+        if self._name == "res.partner":
+            default_partner_id = self.id
+        else:
+            default_partner_id = self.partner_id.id
+
         return {
             "name": "Search Data by CNPJ",
             "type": "ir.actions.act_window",
@@ -56,7 +57,7 @@ class PartyMixin(models.AbstractModel):
             "view_type": "form",
             "view_mode": "form",
             "context": {
-                "default_partner_id": self.id,
+                "default_partner_id": default_partner_id,
             },
             "target": "new",
         }

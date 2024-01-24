@@ -8,7 +8,7 @@ from odoo import api, fields, models
 class PartnerCnpjSearchWizard(models.TransientModel):
     _name = "partner.search.wizard"
 
-    partner_id = fields.Char()
+    partner_id = fields.Many2one(comodel_name="res.partner")
     provider_name = fields.Char()
     cnpj_cpf = fields.Char()
     legal_name = fields.Char()
@@ -48,67 +48,27 @@ class PartnerCnpjSearchWizard(models.TransientModel):
 
     def _get_partner_values(self, cnpj_cpf):
         webservice = self.env["l10n_br_cnpj_search.webservice.abstract"]
-        webservice.get_provider()
+        provider_name = webservice.get_provider()
         response = get(
             webservice.get_api_url(cnpj_cpf), headers=webservice.get_headers()
         )
-
         data = webservice.validate(response)
         values = webservice.import_data(data)
+        values["provider_name"] = provider_name
+        values["cnpj_cpf"] = cnpj_cpf
         return values
 
     def default_get(self, fields):
-        res = super(PartnerCnpjSearchWizard, self).default_get(fields)
+        res = super().default_get(fields)
         partner_id = self._context.get("default_partner_id")
-
-        partner_model = self.env["res.company"]
-        if not partner_model.browse(partner_id).exists():
-            partner_model = self.env["res.partner"]
-
+        partner_model = self.env["res.partner"]
         partner = partner_model.browse(partner_id)
-
         cnpj_cpf = punctuation_rm(partner.cnpj_cpf)
-        webservice_instance = self.env["l10n_br_cnpj_search.webservice.abstract"]
-
-        provider_name = webservice_instance.get_provider()
         values = self._get_partner_values(cnpj_cpf)
-        cnae_secondary_ids = [(6, 0, values.get("cnae_secondary_ids", []))]
-
-        res.update(
-            {
-                "legal_name": values.get("legal_name", ""),
-                "name": values.get("name", ""),
-                "cnpj_cpf": cnpj_cpf,
-                "inscr_est": values.get("inscr_est", ""),
-                "zip": values.get("zip", ""),
-                "street_name": values.get("street_name", ""),
-                "street_number": values.get("street_number", ""),
-                "street2": values.get("street2", ""),
-                "district": values.get("district", ""),
-                "state_id": values.get("state_id", ""),
-                "city_id": values.get("city_id", ""),
-                "country_id": values.get("country_id", ""),
-                "phone": values.get("phone", ""),
-                "mobile": values.get("mobile", ""),
-                "email": values.get("email", ""),
-                "legal_nature": values.get("legal_nature", ""),
-                "equity_capital": values.get("equity_capital", 0.0),
-                "cnae_main_id": values.get("cnae_main_id", ""),
-                "cnae_secondary_ids": cnae_secondary_ids,
-                "provider_name": provider_name,
-            }
-        )
+        res.update(values)
         return res
 
     def action_update_partner(self):
-        partner_id = self._context.get("default_partner_id")
-
-        partner_model = self.env["res.company"]
-        if not partner_model.browse(partner_id).exists():
-            partner_model = self.env["res.partner"]
-
-        partner = partner_model.browse(partner_id)
-
         values_to_update = {
             "legal_name": self.legal_name,
             "name": self.name,
@@ -134,5 +94,5 @@ class PartnerCnpjSearchWizard(models.TransientModel):
         }
         if non_empty_values:
             # Update partner only if there are non-empty values
-            partner.write(non_empty_values)
+            self.partner_id.write(non_empty_values)
         return {"type": "ir.actions.act_window_close"}
