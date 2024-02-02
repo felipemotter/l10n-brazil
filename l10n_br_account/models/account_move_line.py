@@ -187,13 +187,8 @@ class AccountMoveLine(models.Model):
                     for field in [*ACCOUNTING_FIELDS, *BUSINESS_FIELDS]
                 )
             ):
-                fisc_values = {
-                    key: values[key]
-                    for key in self.env["l10n_br_fiscal.document.line"]._fields.keys()
-                    if values.get(key)
-                }
-                fiscal_line = self.env["l10n_br_fiscal.document.line"].new(fisc_values)
-                fiscal_line._compute_amounts()
+                move_line = self.env["account.move.line"].new(values.copy())
+                move_line._compute_amounts()
                 cfop = values.get("cfop_id")
                 cfop_id = (
                     self.env["l10n_br_fiscal.cfop"].browse(cfop) if cfop else False
@@ -209,7 +204,7 @@ class AccountMoveLine(models.Model):
                             "amount_tax_not_included", 0
                         ),
                         amount_tax_withholding=values.get("amount_tax_withholding", 0),
-                        amount_total=fiscal_line.amount_total,
+                        amount_total=move_line.amount_total,
                         currency_id=move_id.currency_id,
                         company_id=move_id.company_id,
                         date=move_id.date,
