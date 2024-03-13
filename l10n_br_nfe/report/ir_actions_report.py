@@ -83,9 +83,7 @@ class IrActionsReport(models.Model):
             tmpLogo.seek(0)
         else:
             tmpLogo = False
-
-        danfe_invoice_display = nfe.company_id.danfe_invoice_display
-        config = self._get_danfe_config(tmpLogo, danfe_invoice_display)
+        config = self._get_danfe_config(tmpLogo)
         if nfe.company_id.danfe_display_pis_cofins:
             config.display_pis_cofins = True
 
@@ -98,13 +96,18 @@ class IrActionsReport(models.Model):
 
         return danfe_file, "pdf"
 
-    def _get_danfe_config(self, tmpLogo, danfe_invoice_display):
+    def _get_danfe_config(self, tmpLogo):
         danfe_config = {
             "logo": tmpLogo,
-            "margins": Margins(top=2, right=2, bottom=2, left=2),
+            "margins": Margins(
+                top=self.env.company.danfe_margin_top,
+                right=self.env.company.danfe_margin_right,
+                bottom=self.env.company.danfe_margin_bottom,
+                left=self.env.company.danfe_margin_left,
+            ),
         }
 
-        if danfe_invoice_display == "duplicates_only":
+        if self.env.company.danfe_invoice_display == "duplicates_only":
             danfe_config["invoice_display"] = InvoiceDisplay.DUPLICATES_ONLY
 
         return DanfeConfig(**danfe_config)
