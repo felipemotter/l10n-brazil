@@ -258,7 +258,9 @@ class AccountMove(models.Model):
                 inv_line_ids.mapped("amount_untaxed")
             )
             move.amount_tax_signed = sign * sum(inv_line_ids.mapped("amount_tax"))
-
+            move.amount_freight_value = sum(move.mapped("amount_freight_value"))
+            move.amount_insurance_value = sum(move.mapped("amount_insurance_value"))
+            move.amount_other_value = sum(move.mapped("amount_other_value"))
         return result
 
     @api.onchange("ind_final")
