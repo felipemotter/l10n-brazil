@@ -206,8 +206,10 @@ class AccountMoveLucroPresumido(AccountMoveBRCommon):
     def setup_company_data(cls, company_name, chart_template=None, **kwargs):
         if company_name == "company_1_data":
             company_name = "empresa 1 Lucro Presumido"
+            cnpj = "62.128.834/0001-34"
         else:
             company_name = "empresa 2 Lucro Presumido"
+            cnpj = "87.396.251/0001-15"
         chart_template = cls.env.ref("l10n_br_coa_generic.l10n_br_coa_generic_template")
         res = super().setup_company_data(
             company_name,
@@ -224,6 +226,7 @@ class AccountMoveLucroPresumido(AccountMoveBRCommon):
             **kwargs
         )
         res["company"].partner_id.state_id = cls.env.ref("base.state_br_sp").id
+        res["company"].partner_id.cnpj_cpf = cnpj
         chart_template.load_fiscal_taxes()
         return res
 
@@ -1863,3 +1866,21 @@ class AccountMoveLucroPresumido(AccountMoveBRCommon):
         )
         self.assertEqual(len(self.move_in_compra_para_revenda.line_ids), 11)
         self.assertEqual(self.move_in_compra_para_revenda.amount_total, 2100)
+
+    def test_change_states(self):
+        # first we make a few assertions about an existing vendor bill:
+        document_id = self.move_out_venda.fiscal_document_id
+        self.assertEqual(self.move_out_venda.state, "draft")
+        self.assertEqual(document_id.state, "em_digitacao")
+        self.move_out_venda.action_post()
+        self.assertEqual(self.move_out_venda.state, "posted")
+        self.assertEqual(document_id.state, "a_enviar")
+        self.move_out_venda.button_draft()
+        self.assertEqual(self.move_out_venda.state, "draft")
+        self.assertEqual(document_id.state, "em_digitacao")
+        document_id.action_document_confirm()
+        self.assertEqual(self.move_out_venda.state, "posted")
+        self.assertEqual(document_id.state, "a_enviar")
+        document_id.action_document_back2draft()
+        self.assertEqual(self.move_out_venda.state, "draft")
+        self.assertEqual(document_id.state, "em_digitacao")
