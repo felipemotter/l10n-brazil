@@ -673,9 +673,7 @@ class AccountMoveLucroPresumido(AccountMoveBRCommon):
         }
 
         term_line_vals_1 = {
-            # "name": "42/1-1",  # TODO FIXME MIGRATE term line name
-            # see recompute_payment_terms_lines v14 method
-            "name": "",
+            "name": "42/1-1",
             "product_id": False,
             "account_id": self.company_data["default_account_payable"].id,
             "partner_id": self.partner_a.id,
