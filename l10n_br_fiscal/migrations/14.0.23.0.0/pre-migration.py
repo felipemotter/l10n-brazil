@@ -20,3 +20,8 @@ def install_new_modules(cr):
 @openupgrade.migrate()
 def migrate(env, version):
     install_new_modules(env.cr)
+    query = """
+        DELETE FROM ir_model_fields
+            WHERE model = 'l10n_br_fiscal.document.electronic'
+    """
+    openupgrade.logged_query(env.cr, query)
