@@ -7,9 +7,6 @@
       <field name="priority">5</field>
       <field name="inherit_id" ref="l10n_br_fiscal.document_form" />
       <field name="arch" type="xml">
-        <xpath expr="//field[@name='state_edoc']/.." position="after">
-            : <field name="status_description" />
-        </xpath>
         <xpath expr="//page[@name='delivery']" position="after">
             <page name="others" string="EDI">
                 <group>
