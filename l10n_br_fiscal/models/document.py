@@ -337,6 +337,7 @@ class Document(models.Model):
             r.name = r._compute_document_name()
 
     @api.depends(
+        "fiscal_line_ids",
         "fiscal_line_ids.estimate_tax",
         "fiscal_line_ids.price_gross",
         "fiscal_line_ids.amount_untaxed",

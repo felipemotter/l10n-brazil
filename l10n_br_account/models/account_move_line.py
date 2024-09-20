@@ -301,6 +301,20 @@ class AccountMoveLine(models.Model):
                 else:  # BRAZIL CASE:
                     if line.cfop_id and not line.cfop_id.finance_move:
                         unsigned_amount_currency = 0
+                        if not line.move_id.fiscal_operation_id.deductible_taxes:
+                            # Quando não há financeiro, mas há imposto, e não há
+                            # dedutíveis, é necessário registrar a contrapartida dos
+                            # impostos para equilibrar o balanço. Na versão 14, essa
+                            # diferença era automaticamente alocada às contas dos
+                            # termos de pagamento.
+                            # TODO:
+                            # o correto mesmo seria não lançar os impostos nesse caso,
+                            # resolver depois.
+                            unsigned_amount_currency = -(
+                                line.amount_tax_included
+                                + line.amount_tax_not_included
+                                - line.amount_tax_withholding
+                            )
                     else:
                         if line.move_id.fiscal_operation_id.deductible_taxes:
                             unsigned_amount_currency = (
@@ -312,18 +326,29 @@ class AccountMoveLine(models.Model):
                             )
                             unsigned_amount_currency = line.currency_id.round(
                                 amount_total
-                                - (
-                                    line.amount_tax_included
-                                    - line.amount_tax_withholding
-                                )
+                                - line.amount_tax_included
                                 - line.amount_tax_not_included
-                                - line.icms_relief_value
+                                if line.tax_ids
+                                else amount_total
                             )
                 amount_currency = unsigned_amount_currency * line.move_id.direction_sign
                 if line.amount_currency != amount_currency or line not in before:
                     line.amount_currency = amount_currency
                 if line.currency_id == line.company_id.currency_id:
                     line.balance = amount_currency
+
+                # Os totais nas linhas foram atualizadas, mas o total da fatura
+                # não foi recalculado automaticamente, já que o método compute_amount
+                # não foi acionado após as alterações nas linhas.
+                # Por esse motivo, estou adicionando manualmente os campos no
+                # add_to_compute do account_move.
+                # Questão: Por que o compute_amount não foi acionado automaticamente?
+                # Isso ocorre apenas quando os valores são diretamente informados
+                # no create? Realizar um teste isolado para confirmar esse
+                # comportamento.
+                move_id = line.move_id
+                self.env.add_to_compute(move_id._fields["amount_total"], move_id)
+                self.env.add_to_compute(move_id._fields["amount_untaxed"], move_id)
 
         after = existing()
         for line in after:
@@ -394,7 +419,6 @@ class AccountMoveLine(models.Model):
 
                 line.price_subtotal = taxes_res["total_excluded"]
                 line.price_total = taxes_res["total_included"]
-                line._compute_balance()
 
             line.price_total += (
                 line.insurance_value
@@ -521,19 +545,33 @@ class AccountMoveLine(models.Model):
             # override the default product uom (set by the onchange):
             self.product_uom_id = self.fiscal_document_line_id.uom_id.id
 
-    @api.onchange("fiscal_tax_ids")
-    def _onchange_fiscal_tax_ids(self):
-        """Ao alterar o campo fiscal_tax_ids que contém os impostos fiscais,
-        são atualizados os impostos contábeis relacionados"""
-        result = super()._onchange_fiscal_tax_ids()
+    @api.depends("product_id", "product_uom_id", "fiscal_tax_ids")
+    def _compute_tax_ids(self):
+        # Adding 'fiscal_tax_ids' as a dependency to ensure that the taxes
+        # are recalculated when this field changes.
+        return super()._compute_tax_ids()
 
-        # Atualiza os impostos contábeis relacionados aos impostos fiscais
-        user_type = "sale"
-        if self.move_id.move_type in ("in_invoice", "in_refund"):
+    def _get_computed_taxes(self):
+        """
+        Override the native method to load taxes from the fiscal module.
+        """
+        self.ensure_one()
+
+        # If no fiscal operation is defined, fallback to the default implementation.
+        if not self.fiscal_operation_id:
+            return super()._get_computed_taxes()
+
+        # Determine the user type based on the document type.
+        user_type = None
+        if self.move_id.is_sale_document(include_receipts=True):
+            user_type = "sale"
+        elif self.move_id.is_purchase_document(include_receipts=True):
             user_type = "purchase"
 
-        self.tax_ids = self.fiscal_tax_ids.account_taxes(
-            user_type=user_type, fiscal_operation=self.fiscal_operation_id
-        )
+        # Retrieve taxes based on user type and fiscal operation.
+        if user_type:
+            tax_ids = self.fiscal_tax_ids.account_taxes(
+                user_type=user_type, fiscal_operation=self.fiscal_operation_id
+            )
 
-        return result
+        return tax_ids
