@@ -43,14 +43,12 @@ class StockInvoiceOnshipping(models.TransientModel):
                 # Evita enviar False quando não tem nada
                 additional_data = ""
                 if pick.sale_id.manual_customer_additional_data:
-                    additional_data = "{}".format(
-                        pick.sale_id.manual_customer_additional_data
-                    )
+                    additional_data = f"{pick.sale_id.manual_customer_additional_data}"
 
                 values.update(
                     {
                         "manual_customer_additional_data": additional_data
-                        + " TERMOS E CONDIÇÕES: {}".format(pick.sale_id.note),
+                        + f" TERMOS E CONDIÇÕES: {pick.sale_id.note}",
                     }
                 )
 
