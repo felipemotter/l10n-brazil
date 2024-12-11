@@ -16,7 +16,7 @@ class Partner(models.Model):
     _name = "res.partner"
     _inherit = [_name, "l10n_br_base.party.mixin"]
 
-    vat = fields.Char(compute="_compute_vat_from_cnpj_cpf", store=True)
+    vat = fields.Char(compute="_compute_vat_from_cnpj_cpf", store=True, recursive=True)
 
     is_accountant = fields.Boolean(string="Is accountant?")
 
