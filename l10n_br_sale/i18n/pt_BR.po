@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Odoo Server 12.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-21 19:52+0000\n"
-"PO-Revision-Date: 2024-12-10 19:06+0000\n"
+"PO-Revision-Date: 2024-12-21 15:52+0000\n"
 "Last-Translator: Marcel Savegnago <marcel.savegnago@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -1203,17 +1203,17 @@ msgstr "Inscr. Estadual"
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__insurance_endorsement
 msgid "Insurance Endorsement"
-msgstr ""
+msgstr "Averbação do Seguro"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__insurance_policy
 msgid "Insurance Policy"
-msgstr ""
+msgstr "Apólice de Seguro"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__partner_insurance_id
 msgid "Insurance Provider"
-msgstr ""
+msgstr "Provedor do Seguro"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__amount_insurance_value
@@ -1271,17 +1271,17 @@ msgstr "Dado Adicional Fiscal Manual"
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__07
 msgid "Material de Uso e Consumo"
-msgstr ""
+msgstr "Material de Uso e Consumo"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__01
 msgid "Matéria-prima"
-msgstr ""
+msgstr "Matéria-prima"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__00
 msgid "Mercadoria para Revenda"
-msgstr ""
+msgstr "Mercadoria para Revenda"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__nbm_id
@@ -1361,7 +1361,7 @@ msgstr "Operação presencial"
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__ind_pres__5
 msgid "Operação presencial, fora do estabelecimento"
-msgstr ""
+msgstr "Operação presencial, fora do estabelecimento"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__amount_other_value
@@ -1382,12 +1382,12 @@ msgstr "Outros"
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__99
 msgid "Outras"
-msgstr ""
+msgstr "Outras"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__10
 msgid "Outros insumos"
-msgstr ""
+msgstr "Outros insumos"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__pis_percent
@@ -1517,7 +1517,7 @@ msgstr "Linha de Pedido do Parceiro (nItemPed)"
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__p_devol
 msgid "Percentual de mercadoria devolvida"
-msgstr ""
+msgstr "Percentual de mercadoria devolvida"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__price_tax
@@ -1543,17 +1543,17 @@ msgstr "Quantidade do Produto (UOM)"
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__04
 msgid "Produto Acabado"
-msgstr ""
+msgstr "Produto Acabado"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__06
 msgid "Produto Intermediário"
-msgstr ""
+msgstr "Produto Intermediário"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__03
 msgid "Produto em Processo"
-msgstr ""
+msgstr "Produto em Processo"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__partner_is_public_entity
@@ -1568,7 +1568,7 @@ msgstr "Razão Social"
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__partner_receivering_id
 msgid "Receiver Address"
-msgstr ""
+msgstr "Endereço do Recebedor"
 
 #. module: l10n_br_sale
 #: model_terms:ir.ui.view,arch_db:l10n_br_sale.l10n_br_sale_res_company_form
@@ -1593,7 +1593,7 @@ msgstr "Linha do Pedido de Vendas"
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__partner_sendering_id
 msgid "Sender Address"
-msgstr ""
+msgstr "Endereço do Remetente"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__document_serie
@@ -1608,12 +1608,12 @@ msgstr "Tipo de Serviço LC 166"
 #. module: l10n_br_sale
 #: model:ir.model.fields.selection,name:l10n_br_sale.selection__sale_report__fiscal_type__09
 msgid "Serviços"
-msgstr ""
+msgstr "Serviços"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__partner_shippering_id
 msgid "Shipper Address"
-msgstr ""
+msgstr "Endereço do Expedidor"
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__icmssn_range_id
@@ -1793,6 +1793,9 @@ msgid ""
 "modifications or adjustments to the coverage. This field is primarily used "
 "when issuing the CT-e."
 msgstr ""
+"O número da averbação associado à apólice de seguro, indicando quaisquer "
+"modificações ou ajustes na cobertura. Este campo é usado principalmente ao "
+"emitir o CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,help:l10n_br_sale.field_sale_order__insurance_policy
@@ -1800,6 +1803,8 @@ msgid ""
 "The insurance policy number covering the transported goods. This field is "
 "primarily used when issuing the CT-e."
 msgstr ""
+"O número da apólice de seguro que cobre as mercadorias transportadas. Este "
+"campo é usado principalmente ao emitir o CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,help:l10n_br_sale.field_sale_order__partner_receivering_id
@@ -1808,6 +1813,10 @@ msgid ""
 "recipient, often involved in verification, temporary storage, or further "
 "distribution. This field is primarily used when issuing the CT-e."
 msgstr ""
+"O parceiro intermediário que recebe as mercadorias antes que elas cheguem ao "
+"destinatário final, frequentemente envolvido em verificação, armazenamento "
+"temporário ou distribuição posterior. Este campo é usado principalmente ao "
+"emitir o CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,help:l10n_br_sale.field_sale_order__partner_insurance_id
@@ -1815,6 +1824,8 @@ msgid ""
 "The partner providing insurance coverage for the transported goods. This "
 "field is primarily used when issuing the CT-e."
 msgstr ""
+"O parceiro que fornece cobertura de seguro para as mercadorias "
+"transportadas. Este campo é usado principalmente ao emitir o CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,help:l10n_br_sale.field_sale_order__partner_shippering_id
@@ -1822,6 +1833,9 @@ msgid ""
 "The partner responsible for delivering the cargo to the carrier, if not done "
 "directly by the sender. This field is primarily used when issuing the CT-e."
 msgstr ""
+"O parceiro responsável pela entrega da carga ao transportador, caso não seja "
+"feita diretamente pelo remetente. Este campo é usado principalmente na "
+"emissão do CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,help:l10n_br_sale.field_sale_order__partner_sendering_id
@@ -1829,6 +1843,8 @@ msgid ""
 "The partner responsible for sending the goods, typically the issuer of the "
 "document. This field is primarily used when issuing the CT-e."
 msgstr ""
+"O parceiro responsável pelo envio das mercadorias, normalmente o emissor do "
+"documento. Este campo é usado principalmente ao emitir o CT-e."
 
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order__amount_total
@@ -1903,7 +1919,7 @@ msgstr "Valor do ICMS Próprio do Substituto cobrado em operação anterior"
 #. module: l10n_br_sale
 #: model:ir.model.fields,field_description:l10n_br_sale.field_sale_order_line__ipi_devol_value
 msgid "Valor do IPI devolvido"
-msgstr ""
+msgstr "Valor do IPI devolvido"
 
 #~ msgid ""
 #~ "Actor who receives the goods. He is considered an "
