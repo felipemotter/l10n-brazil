@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-09-26 14:06+0000\n"
+"PO-Revision-Date: 2025-01-16 18:06+0000\n"
 "Last-Translator: Marcel Savegnago <marcel.savegnago@gmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -726,6 +726,8 @@ msgid ""
 "Odoo helps you easily track all activities\n"
 "            related to a fiscal operation."
 msgstr ""
+"Odoo ajuda você a acompanhar facilmente todas as atividades\n"
+"            relacionados a uma operação fiscal."
 
 #. module: l10n_br_fiscal_edi
 #: model:ir.model.fields.selection,name:l10n_br_fiscal_edi.selection__l10n_br_fiscal_document_import_wizard_mixin__fiscal_operation_type__out
