@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: L10n-brazil 12.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-12-10 19:06+0000\n"
+"PO-Revision-Date: 2025-01-16 18:06+0000\n"
 "Last-Translator: Marcel Savegnago <marcel.savegnago@gmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
@@ -2240,7 +2240,7 @@ msgstr "Telefone da Empresa"
 #: model:ir.model.fields,field_description:l10n_br_fiscal.field_l10n_br_fiscal_document__company_inscr_est_st
 #: model:ir.model.fields,field_description:l10n_br_fiscal.field_l10n_br_fiscal_document_move_mixin__company_inscr_est_st
 msgid "Company ST State Tax Number"
-msgstr ""
+msgstr "Número da Inscrição Estadual da Empresa ST"
 
 #. module: l10n_br_fiscal
 #: model:ir.model.fields,field_description:l10n_br_fiscal.field_l10n_br_fiscal_document__company_state_id
@@ -3418,7 +3418,7 @@ msgstr "E-mail de Documentos Fiscais"
 #: model:ir.model.fields.selection,name:l10n_br_fiscal.selection__l10n_br_fiscal_comment__object_id__l10n_br_fiscal_document_line_mixin
 #: model_terms:ir.ui.view,arch_db:l10n_br_fiscal.document_line_form
 msgid "Fiscal Document Line"
-msgstr "Linha de Documento Fiscal"
+msgstr "Linha do Documento Fiscal"
 
 #. module: l10n_br_fiscal
 #: model:ir.model,name:l10n_br_fiscal.model_l10n_br_fiscal_document_line_mixin_methods
