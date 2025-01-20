@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 14.0\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2024-09-26 14:06+0000\n"
-"Last-Translator: Marcel Savegnago <marcel.savegnago@gmail.com>\n"
+"PO-Revision-Date: 2025-01-20 16:06+0000\n"
+"Last-Translator: Wesley Oliveira <wesleygabrieldeoliveira@gmail.com>\n"
 "Language-Team: none\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
@@ -68,7 +68,7 @@ msgstr "02 - Cheque Pagamento / Administrativo"
 #. module: l10n_br_account_payment_order
 #: model:ir.model.fields.selection,name:l10n_br_account_payment_order.selection__account_payment_order__indicative_form_payment__02
 msgid "02 - Débito Empréstimo/Financiamento"
-msgstr ""
+msgstr "02 - Débito Empréstimo/Financiamento"
 
 #. module: l10n_br_account_payment_order
 #: model:ir.model.fields.selection,name:l10n_br_account_payment_order.selection__account_payment_line__doc_finality_code__02
@@ -82,7 +82,7 @@ msgstr "02 - Pagamento de Aluguel/Condomínio"
 #: model:ir.model.fields.selection,name:l10n_br_account_payment_order.selection__account_payment_order__service_type__03
 #: model:ir.model.fields.selection,name:l10n_br_account_payment_order.selection__l10n_br_cnab_config__service_type__03
 msgid "03 - Boleto de Pagamento Eletrônico"
-msgstr ""
+msgstr "03 - Boleto de Pagamento Eletrônico"
 
 #. module: l10n_br_account_payment_order
 #: model:ir.model.fields.selection,name:l10n_br_account_payment_order.selection__account_payment_order__release_form__03
